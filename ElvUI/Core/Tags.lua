@@ -140,6 +140,28 @@ for textFormat in pairs(E.GetFormattedTextStyles) do
 			return E:GetFormattedText(textFormat, UnitPower(unit, SPELL_POWER_MANA), UnitPowerMax(unit, SPELL_POWER_MANA))
 		end
 	end
+
+	ElvUF.Tags.Events[format("energy:%s", tagTextFormat)] = "UNIT_MAXENERGY UNIT_ENERGY"
+	ElvUF.Tags.Methods[format("energy:%s", tagTextFormat)] = function(unit)
+		local min = UnitPower(unit, 3)
+
+		if min == 0 and tagTextFormat ~= "deficit" then
+			return ""
+		else
+			return E:GetFormattedText(textFormat, UnitPower(unit, 3), UnitPowerMax(unit, 3))
+		end
+	end
+
+	ElvUF.Tags.Events[format("rage:%s", tagTextFormat)] = "UNIT_MAXRAGE UNIT_RAGE"
+	ElvUF.Tags.Methods[format("rage:%s", tagTextFormat)] = function(unit)
+		local min = UnitPower(unit, 1)
+
+		if min == 0 and tagTextFormat ~= "deficit" then
+			return ""
+		else
+			return E:GetFormattedText(textFormat, UnitPower(unit, 1), UnitPowerMax(unit, 1))
+		end
+	end
 end
 
 for textFormat, length in pairs({veryshort = 5, short = 10, medium = 15, long = 20}) do
