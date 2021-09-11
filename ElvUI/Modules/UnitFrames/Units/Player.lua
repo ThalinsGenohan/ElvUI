@@ -20,6 +20,8 @@ function UF:Construct_PlayerFrame(frame)
 	frame.Health.frequentUpdates = true
 	frame.Power = self:Construct_PowerBar(frame, true, true, "LEFT")
 	frame.Power.frequentUpdates = true
+	frame.Energy = self:Construct_EnergyBar(frame, true, true, "LEFT")
+	frame.Rage = self:Construct_RageBar(frame, true, true, "LEFT")
 	frame.Name = self:Construct_NameText(frame)
 	frame.Portrait3D = self:Construct_Portrait(frame, "model")
 	frame.Portrait2D = self:Construct_Portrait(frame, "texture")
