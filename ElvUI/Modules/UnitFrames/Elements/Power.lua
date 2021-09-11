@@ -194,22 +194,22 @@ function UF:Configure_Power(frame)
 
 			if frame.ORIENTATION == "LEFT" then
 				power:Width(frame.POWERBAR_WIDTH - frame.BORDER * 2)
-				power:Point("RIGHT", frame, "BOTTOMRIGHT",
+				power:Point("TOPRIGHT", frame, "BOTTOMRIGHT",
 					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)
 			elseif frame.ORIENTATION == "RIGHT" then
 				power:Width(frame.POWERBAR_WIDTH - frame.BORDER * 2)
-				power:Point("LEFT", frame, "BOTTOMLEFT",
+				power:Point("TOPLEFT", frame, "BOTTOMLEFT",
 					frame.BORDER * 2 + 4 + (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)
 			else
-				power:Point("LEFT", frame, "BOTTOMLEFT",
+				power:Point("TOPLEFT", frame, "BOTTOMLEFT",
 					frame.BORDER * 2 + 4,
 					yPos
 				)
-				power:Point("RIGHT", frame, "BOTTOMRIGHT",
+				power:Point("TOPRIGHT", frame, "BOTTOMRIGHT",
 					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)

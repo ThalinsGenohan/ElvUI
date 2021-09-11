@@ -155,32 +155,32 @@ function UF:Configure_Rage(frame)
 		elseif frame.USE_MINI_RAGEBAR then
 			local totalHeight = frame.RAGEBAR_HEIGHT - frame.BORDER
 			if frame.USE_POWERBAR and frame.USE_MINI_POWERBAR then
-				totalHeight = totalHeight - (frame.POWERBAR_HEIGHT - frame.BORDER)
+				totalHeight = totalHeight + (frame.POWERBAR_HEIGHT - frame.BORDER)
 			end
 			if frame.USE_ENERGYBAR and frame.USE_MINI_ENERGYBAR then
-				totalHeight = totalHeight - (frame.ENERGYBAR_HEIGHT - frame.BORDER)
+				totalHeight = totalHeight + (frame.ENERGYBAR_HEIGHT - frame.BORDER)
 			end
-			local yPos = totalHeight / 2
+			local yPos = -(totalHeight / 2) + (frame.RAGEBAR_HEIGHT - frame.BORDER)
 			print("Rage:   "..yPos)
 
 			if frame.ORIENTATION == "LEFT" then
 				rage:Width(frame.RAGEBAR_WIDTH - frame.BORDER * 2)
-				rage:Point("RIGHT", frame, "BOTTOMRIGHT",
+				rage:Point("TOPRIGHT", frame, "BOTTOMRIGHT",
 					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)
 			elseif frame.ORIENTATION == "RIGHT" then
 				rage:Width(frame.RAGEBAR_WIDTH - frame.BORDER*2)
-				rage:Point("LEFT", frame, "BOTTOMLEFT",
+				rage:Point("TOPLEFT", frame, "BOTTOMLEFT",
 					frame.BORDER * 2 + 4 + (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)
 			else
-				rage:Point("LEFT", frame, "BOTTOMLEFT",
+				rage:Point("TOPLEFT", frame, "BOTTOMLEFT",
 					frame.BORDER * 2 + 4,
 					yPos
 				)
-				rage:Point("RIGHT", frame, "BOTTOMRIGHT",
+				rage:Point("TOPRIGHT", frame, "BOTTOMRIGHT",
 					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)

@@ -173,32 +173,32 @@ function UF:Configure_Energy(frame)
 		elseif frame.USE_MINI_ENERGYBAR then
 			local totalHeight = frame.ENERGYBAR_HEIGHT - frame.BORDER
 			if frame.USE_POWERBAR and frame.USE_MINI_POWERBAR then
-				totalHeight = totalHeight - (frame.POWERBAR_HEIGHT - frame.BORDER)
+				totalHeight = totalHeight + (frame.POWERBAR_HEIGHT - frame.BORDER)
 			end
 			if frame.USE_RAGEBAR and frame.USE_MINI_RAGEBAR then
 				totalHeight = totalHeight + (frame.RAGEBAR_HEIGHT - frame.BORDER)
 			end
-			local yPos = totalHeight / 2
+			local yPos = (totalHeight / 2) - (frame.POWERBAR_HEIGHT - frame.BORDER)
 			print("Energy: "..yPos)
 
 			if frame.ORIENTATION == "LEFT" then
 				energy:Width(frame.ENERGYBAR_WIDTH - frame.BORDER * 2)
-				energy:Point("RIGHT", frame, "BOTTOMRIGHT",
+				energy:Point("TOPRIGHT", frame, "BOTTOMRIGHT",
 					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)
 			elseif frame.ORIENTATION == "RIGHT" then
 				energy:Width(frame.ENERGYBAR_WIDTH - frame.BORDER*2)
-				energy:Point("LEFT", frame, "BOTTOMLEFT",
+				energy:Point("TOPLEFT", frame, "BOTTOMLEFT",
 					frame.BORDER * 2 + 4 + (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)
 			else
-				energy:Point("LEFT", frame, "BOTTOMLEFT",
+				energy:Point("TOPLEFT", frame, "BOTTOMLEFT",
 					frame.BORDER * 2 + 4,
 					yPos
 				)
-				energy:Point("RIGHT", frame, "BOTTOMRIGHT",
+				energy:Point("TOPRIGHT", frame, "BOTTOMRIGHT",
 					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)
