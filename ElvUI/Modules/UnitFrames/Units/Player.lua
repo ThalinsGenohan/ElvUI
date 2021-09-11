@@ -74,6 +74,7 @@ function UF:Update_PlayerFrame(frame, db)
 		frame.UNIT_WIDTH = db.width
 		frame.UNIT_HEIGHT = db.infoPanel.enable and (db.height + db.infoPanel.height) or db.height
 
+		-- Power
 		frame.USE_POWERBAR = db.power.enable
 		frame.POWERBAR_DETACHED = db.power.detachFromFrame
 		frame.USE_INSET_POWERBAR = not frame.POWERBAR_DETACHED and db.power.width == "inset" and frame.USE_POWERBAR
@@ -83,6 +84,28 @@ function UF:Update_PlayerFrame(frame, db)
 
 		frame.POWERBAR_HEIGHT = not frame.USE_POWERBAR and 0 or db.power.height
 		frame.POWERBAR_WIDTH = frame.USE_MINI_POWERBAR and (frame.UNIT_WIDTH - (frame.BORDER*2))/2 or (frame.POWERBAR_DETACHED and db.power.detachedWidth or (frame.UNIT_WIDTH - ((frame.BORDER+frame.SPACING)*2)))
+
+		-- Energy
+		frame.USE_ENERGYBAR = db.energy.enable
+		frame.ENERGYBAR_DETACHED = db.energy.detachFromFrame
+		frame.USE_INSET_ENERGYBAR = not frame.ENERGYBAR_DETACHED and db.energy.width == "inset" and frame.USE_ENERGYBAR
+		frame.USE_MINI_ENERGYBAR = (not frame.ENERGYBAR_DETACHED and db.energy.width == "spaced" and frame.USE_ENERGYBAR)
+		frame.USE_ENERGYBAR_OFFSET = db.energy.offset ~= 0 and frame.USE_ENERGYBAR and not frame.ENERGYBAR_DETACHED
+		frame.ENERGYBAR_OFFSET = frame.USE_ENERGYBAR_OFFSET and db.energy.offset or 0
+
+		frame.ENERGYBAR_HEIGHT = not frame.USE_ENERGYBAR and 0 or db.energy.height
+		frame.ENERGYBAR_WIDTH = frame.USE_MINI_ENERGYBAR and (frame.UNIT_WIDTH - (frame.BORDER*2))/2 or (frame.ENERGYBAR_DETACHED and db.energy.detachedWidth or (frame.UNIT_WIDTH - ((frame.BORDER+frame.SPACING)*2)))
+
+		-- Rage
+		frame.USE_RAGEBAR = db.rage.enable
+		frame.RAGEBAR_DETACHED = db.rage.detachFromFrame
+		frame.USE_INSET_RAGEBAR = not frame.RAGEBAR_DETACHED and db.rage.width == "inset" and frame.USE_RAGEBAR
+		frame.USE_MINI_RAGEBAR = (not frame.RAGEBAR_DETACHED and db.rage.width == "spaced" and frame.USE_RAGEBAR)
+		frame.USE_RAGEBAR_OFFSET = db.rage.offset ~= 0 and frame.USE_RAGEBAR and not frame.RAGEBAR_DETACHED
+		frame.RAGEBAR_OFFSET = frame.USE_RAGEBAR_OFFSET and db.rage.offset or 0
+
+		frame.RAGEBAR_HEIGHT = not frame.USE_RAGEBAR and 0 or db.rage.height
+		frame.RAGEBAR_WIDTH = frame.USE_MINI_RAGEBAR and (frame.UNIT_WIDTH - (frame.BORDER*2))/2 or (frame.RAGEBAR_DETACHED and db.rage.detachedWidth or (frame.UNIT_WIDTH - ((frame.BORDER+frame.SPACING)*2)))
 
 		frame.USE_PORTRAIT = db.portrait and db.portrait.enable
 		frame.USE_PORTRAIT_OVERLAY = frame.USE_PORTRAIT and (db.portrait.overlay or frame.ORIENTATION == "MIDDLE")
@@ -138,6 +161,12 @@ function UF:Update_PlayerFrame(frame, db)
 
 	--Power
 	UF:Configure_Power(frame)
+
+	--Energy
+	UF:Configure_Energy(frame)
+
+	--Rage
+	UF:Configure_Rage(frame)
 
 	--Portrait
 	UF:Configure_Portrait(frame)
