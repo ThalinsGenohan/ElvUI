@@ -51,8 +51,6 @@ local function UpdateColor(self, event, unit)
 		r, g, b = self:ColorGradient(element.cur or 1, element.max or 1, unpack(element.smoothGradient or self.colors.smooth))
 	end
 
-	print(t)
-
 	if(t) then
 		r, g, b = t[1], t[2], t[3]
 	end

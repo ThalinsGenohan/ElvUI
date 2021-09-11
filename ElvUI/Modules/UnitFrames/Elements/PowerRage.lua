@@ -153,23 +153,56 @@ function UF:Configure_Rage(frame)
 			rage:Point("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT", -(frame.BORDER + frame.BORDER * 2), frame.BORDER + frame.BORDER * 2)
 			rage:SetFrameLevel(50)
 		elseif frame.USE_MINI_RAGEBAR then
-			rage:Height(frame.RAGEBAR_HEIGHT - (frame.BORDER + frame.SPACING) * 2)
+			local totalHeight = frame.RAGEBAR_HEIGHT - frame.BORDER
+			if frame.USE_POWERBAR and frame.USE_MINI_POWERBAR then
+				totalHeight = totalHeight - (frame.POWERBAR_HEIGHT - frame.BORDER)
+			end
+			if frame.USE_ENERGYBAR and frame.USE_MINI_ENERGYBAR then
+				totalHeight = totalHeight - (frame.ENERGYBAR_HEIGHT - frame.BORDER)
+			end
+			local yPos = totalHeight / 2
+			print("Rage:   "..yPos)
 
 			if frame.ORIENTATION == "LEFT" then
 				rage:Width(frame.RAGEBAR_WIDTH - frame.BORDER * 2)
-				rage:Point("RIGHT", frame, "BOTTOMRIGHT", -(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0), (frame.RAGEBAR_HEIGHT - frame.BORDER) / 2)
+				rage:Point("RIGHT", frame, "BOTTOMRIGHT",
+					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
+					yPos
+				)
 			elseif frame.ORIENTATION == "RIGHT" then
 				rage:Width(frame.RAGEBAR_WIDTH - frame.BORDER*2)
-				rage:Point("LEFT", frame, "BOTTOMLEFT", frame.BORDER * 2 + 4 + (frame.HAPPINESS_WIDTH or 0), (frame.RAGEBAR_HEIGHT - frame.BORDER) / 2)
+				rage:Point("LEFT", frame, "BOTTOMLEFT",
+					frame.BORDER * 2 + 4 + (frame.HAPPINESS_WIDTH or 0),
+					yPos
+				)
 			else
-				rage:Point("LEFT", frame, "BOTTOMLEFT", frame.BORDER * 2 + 4, ((frame.RAGEBAR_HEIGHT-frame.BORDER)/2))
-				rage:Point("RIGHT", frame, "BOTTOMRIGHT", -(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0), (frame.RAGEBAR_HEIGHT - frame.BORDER) / 2)
+				rage:Point("LEFT", frame, "BOTTOMLEFT",
+					frame.BORDER * 2 + 4,
+					yPos
+				)
+				rage:Point("RIGHT", frame, "BOTTOMRIGHT",
+					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
+					yPos
+				)
 			end
 
+			rage:Height(frame.RAGEBAR_HEIGHT - (frame.BORDER + frame.SPACING) * 2)
 			rage:SetFrameLevel(50)
-		else
-			rage:Point("TOPRIGHT", frame.Health.backdrop, "BOTTOMRIGHT", -frame.BORDER, -frame.SPACING * 3)
-			rage:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", frame.BORDER, -frame.SPACING * 3)
+		else -- Filled
+			local anchor = frame.Energy.backdrop
+			if not frame.USE_ENERGYBAR or frame.USE_ENERGYBAR_DETACHED or frame.USE_INSET_ENERGYBAR or frame.USE_MINI_ENERGYBAR then
+				if not frame.USE_POWERBAR or frame.USE_POWERBAR_DETACHED or frame.USE_INSET_POWERBAR or frame.USE_MINI_POWERBAR then
+					anchor = frame.Health.backdrop
+				else anchor = frame.Power.backdrop end
+			end
+			rage:Point("TOPRIGHT", anchor, "BOTTOMRIGHT",
+				-frame.BORDER,
+				-frame.SPACING * 3
+			)
+			rage:Point("TOPLEFT", anchor, "BOTTOMLEFT",
+				frame.BORDER,
+				-frame.SPACING * 3
+			)
 			rage:Height(frame.RAGEBAR_HEIGHT - (frame.BORDER + frame.SPACING) * 2)
 
 			rage:SetFrameLevel(frame.Health:GetFrameLevel() - 5)

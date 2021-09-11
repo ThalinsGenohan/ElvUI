@@ -148,30 +148,78 @@ function UF:Configure_Energy(frame)
 			end
 			energy:SetFrameLevel(frame.Health:GetFrameLevel() - 5) --Health uses 10
 		elseif frame.USE_INSET_ENERGYBAR then
+			if frame.USE_INSET_RAGEBAR and frame.USE_RAGEBAR then
+				energy:Point("BOTTOMLEFT", frame.Rage, "TOPLEFT",
+					0,
+					frame.BORDER * 2
+				)
+				energy:Point("BOTTOMRIGHT", frame.Rage, "TOPRIGHT",
+					0,
+					frame.BORDER * 2
+				)
+			else
+				energy:Point("BOTTOMLEFT", frame.Health, "BOTTOMLEFT",
+					frame.BORDER + frame.BORDER * 2,
+					frame.BORDER + frame.BORDER * 2
+				)
+				energy:Point("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT",
+					-(frame.BORDER + frame.BORDER * 2),
+					frame.BORDER + frame.BORDER * 2
+				)
+			end
+
 			energy:Height(frame.ENERGYBAR_HEIGHT - (frame.BORDER + frame.SPACING) * 2)
-			energy:Point("BOTTOMLEFT", frame.Health, "BOTTOMLEFT", frame.BORDER + frame.BORDER * 2, frame.BORDER + frame.BORDER * 2)
-			energy:Point("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT", -(frame.BORDER + frame.BORDER * 2), frame.BORDER + frame.BORDER * 2)
 			energy:SetFrameLevel(50)
 		elseif frame.USE_MINI_ENERGYBAR then
-			energy:Height(frame.ENERGYBAR_HEIGHT - (frame.BORDER + frame.SPACING) * 2)
+			local totalHeight = frame.ENERGYBAR_HEIGHT - frame.BORDER
+			if frame.USE_POWERBAR and frame.USE_MINI_POWERBAR then
+				totalHeight = totalHeight - (frame.POWERBAR_HEIGHT - frame.BORDER)
+			end
+			if frame.USE_RAGEBAR and frame.USE_MINI_RAGEBAR then
+				totalHeight = totalHeight + (frame.RAGEBAR_HEIGHT - frame.BORDER)
+			end
+			local yPos = totalHeight / 2
+			print("Energy: "..yPos)
 
 			if frame.ORIENTATION == "LEFT" then
 				energy:Width(frame.ENERGYBAR_WIDTH - frame.BORDER * 2)
-				energy:Point("RIGHT", frame, "BOTTOMRIGHT", -(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0), (frame.ENERGYBAR_HEIGHT - frame.BORDER) / 2)
+				energy:Point("RIGHT", frame, "BOTTOMRIGHT",
+					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
+					yPos
+				)
 			elseif frame.ORIENTATION == "RIGHT" then
 				energy:Width(frame.ENERGYBAR_WIDTH - frame.BORDER*2)
-				energy:Point("LEFT", frame, "BOTTOMLEFT", frame.BORDER * 2 + 4 + (frame.HAPPINESS_WIDTH or 0), (frame.ENERGYBAR_HEIGHT - frame.BORDER) / 2)
+				energy:Point("LEFT", frame, "BOTTOMLEFT",
+					frame.BORDER * 2 + 4 + (frame.HAPPINESS_WIDTH or 0),
+					yPos
+				)
 			else
-				energy:Point("LEFT", frame, "BOTTOMLEFT", frame.BORDER * 2 + 4, ((frame.ENERGYBAR_HEIGHT-frame.BORDER)/2))
-				energy:Point("RIGHT", frame, "BOTTOMRIGHT", -(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0), (frame.ENERGYBAR_HEIGHT - frame.BORDER) / 2)
+				energy:Point("LEFT", frame, "BOTTOMLEFT",
+					frame.BORDER * 2 + 4,
+					yPos
+				)
+				energy:Point("RIGHT", frame, "BOTTOMRIGHT",
+					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
+					yPos
+				)
 			end
 
-			energy:SetFrameLevel(50)
-		else
-			energy:Point("TOPRIGHT", frame.Health.backdrop, "BOTTOMRIGHT", -frame.BORDER, -frame.SPACING * 3)
-			energy:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", frame.BORDER, -frame.SPACING * 3)
 			energy:Height(frame.ENERGYBAR_HEIGHT - (frame.BORDER + frame.SPACING) * 2)
-
+			energy:SetFrameLevel(50)
+		else -- Filled
+			local anchor = frame.Power.backdrop
+			if not frame.USE_POWERBAR or frame.USE_POWERBAR_DETACHED or frame.USE_INSET_POWERBAR or frame.USE_MINI_POWERBAR then
+				anchor = frame.Health.backdrop
+			end
+			energy:Point("TOPLEFT", anchor, "BOTTOMLEFT",
+				frame.BORDER,
+				-frame.SPACING * 3
+			)
+			energy:Point("TOPRIGHT", anchor, "BOTTOMRIGHT",
+				-frame.BORDER,
+				-frame.SPACING * 3
+			)
+			energy:Height(frame.ENERGYBAR_HEIGHT - (frame.BORDER + frame.SPACING) * 2)
 			energy:SetFrameLevel(frame.Health:GetFrameLevel() - 5)
 		end
 
