@@ -136,15 +136,36 @@ function UF:Configure_Rage(frame)
 
 			rage:SetFrameLevel(50) --RaisedElementParent uses 100, we want lower value to allow certain icons and texts to appear above rage
 		elseif frame.USE_RAGEBAR_OFFSET then
+			local anchor = frame.Health
+			if frame.USE_POWERBAR and frame.USE_POWERBAR_OFFSET then
+				anchor = frame.Power
+			end
+			if frame.USE_ENERGYBAR and frame.USE_ENERGYBAR_OFFSET then
+				anchor = frame.Energy
+			end
 			if frame.ORIENTATION == "LEFT" then
-				rage:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.RAGEBAR_OFFSET + (frame.HAPPINESS_WIDTH or 0), -frame.RAGEBAR_OFFSET)
-				rage:Point("BOTTOMLEFT", frame.Health, "BOTTOMLEFT", frame.RAGEBAR_OFFSET, -frame.RAGEBAR_OFFSET)
+				rage:Point("TOPRIGHT", anchor, "TOPRIGHT", frame.RAGEBAR_OFFSET + (frame.HAPPINESS_WIDTH or 0), -frame.RAGEBAR_OFFSET)
+				rage:Point("BOTTOMLEFT", anchor, "BOTTOMLEFT", frame.RAGEBAR_OFFSET, -frame.RAGEBAR_OFFSET)
 			elseif frame.ORIENTATION == "MIDDLE" then
-				rage:Point("TOPLEFT", frame, "TOPLEFT", frame.BORDER + frame.SPACING, -frame.RAGEBAR_OFFSET - frame.CLASSBAR_YOFFSET)
-				rage:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -frame.BORDER - frame.SPACING, frame.BORDER)
+				local preOffset = 0
+				if frame.USE_POWERBAR and frame.USE_POWERBAR_OFFSET then
+					preOffset = preOffset + frame.POWERBAR_OFFSET
+				end
+				if frame.USE_ENERGYBAR and frame.USE_ENERGYBAR_OFFSET then
+					preOffset = preOffset + frame.ENERGYBAR_OFFSET
+				end
+
+				rage:Point("TOPLEFT", frame, "TOPLEFT",
+					frame.BORDER + frame.SPACING,
+					-(preOffset + frame.RAGEBAR_OFFSET + frame.CLASSBAR_YOFFSET) --+ frame.BORDER - frame.SPACING)
+				)
+				rage:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT",
+					-(frame.BORDER + frame.SPACING),
+					frame.BORDER + frame.SPACING
+				)
 			else
-				rage:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.RAGEBAR_OFFSET - (frame.HAPPINESS_WIDTH or 0), -frame.RAGEBAR_OFFSET)
-				rage:Point("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT", -frame.RAGEBAR_OFFSET, -frame.RAGEBAR_OFFSET)
+				rage:Point("TOPLEFT", anchor, "TOPLEFT", -frame.RAGEBAR_OFFSET - (frame.HAPPINESS_WIDTH or 0), -frame.RAGEBAR_OFFSET)
+				rage:Point("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", -frame.RAGEBAR_OFFSET, -frame.RAGEBAR_OFFSET)
 			end
 			rage:SetFrameLevel(frame.Health:GetFrameLevel() - 5) --Health uses 10
 		elseif frame.USE_INSET_RAGEBAR then
@@ -165,22 +186,22 @@ function UF:Configure_Rage(frame)
 
 			if frame.ORIENTATION == "LEFT" then
 				rage:Width(frame.RAGEBAR_WIDTH - frame.BORDER * 2)
-				rage:Point("TOPRIGHT", frame, "BOTTOMRIGHT",
+				rage:Point("TOPRIGHT", frame.Health, "BOTTOMRIGHT",
 					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)
 			elseif frame.ORIENTATION == "RIGHT" then
 				rage:Width(frame.RAGEBAR_WIDTH - frame.BORDER*2)
-				rage:Point("TOPLEFT", frame, "BOTTOMLEFT",
+				rage:Point("TOPLEFT", frame.Health, "BOTTOMLEFT",
 					frame.BORDER * 2 + 4 + (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)
 			else
-				rage:Point("TOPLEFT", frame, "BOTTOMLEFT",
+				rage:Point("TOPLEFT", frame.Health, "BOTTOMLEFT",
 					frame.BORDER * 2 + 4,
 					yPos
 				)
-				rage:Point("TOPRIGHT", frame, "BOTTOMRIGHT",
+				rage:Point("TOPRIGHT", frame.Health, "BOTTOMRIGHT",
 					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)

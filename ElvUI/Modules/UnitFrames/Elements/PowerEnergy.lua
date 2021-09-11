@@ -136,15 +136,34 @@ function UF:Configure_Energy(frame)
 
 			energy:SetFrameLevel(50) --RaisedElementParent uses 100, we want lower value to allow certain icons and texts to appear above energy
 		elseif frame.USE_ENERGYBAR_OFFSET then
+			local anchor = frame.Health
+			if frame.USE_POWERBAR and frame.USE_POWERBAR_OFFSET then
+				anchor = frame.Power
+			end
 			if frame.ORIENTATION == "LEFT" then
-				energy:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.ENERGYBAR_OFFSET + (frame.HAPPINESS_WIDTH or 0), -frame.ENERGYBAR_OFFSET)
-				energy:Point("BOTTOMLEFT", frame.Health, "BOTTOMLEFT", frame.ENERGYBAR_OFFSET, -frame.ENERGYBAR_OFFSET)
+				energy:Point("TOPRIGHT", anchor, "TOPRIGHT", frame.ENERGYBAR_OFFSET + (frame.HAPPINESS_WIDTH or 0), -frame.ENERGYBAR_OFFSET)
+				energy:Point("BOTTOMLEFT", anchor, "BOTTOMLEFT", frame.ENERGYBAR_OFFSET, -frame.ENERGYBAR_OFFSET)
 			elseif frame.ORIENTATION == "MIDDLE" then
-				energy:Point("TOPLEFT", frame, "TOPLEFT", frame.BORDER + frame.SPACING, -frame.ENERGYBAR_OFFSET - frame.CLASSBAR_YOFFSET)
-				energy:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -frame.BORDER - frame.SPACING, frame.BORDER)
+				local preOffset = 0
+				if frame.USE_POWERBAR and frame.USE_POWERBAR_OFFSET then
+					preOffset = preOffset + frame.POWERBAR_OFFSET
+				end
+				local postOffset = 0
+				if frame.USE_RAGEBAR and frame.USE_RAGEBAR_OFFSET then
+					postOffset = postOffset + frame.RAGEBAR_OFFSET
+				end
+
+				energy:Point("TOPLEFT", frame, "TOPLEFT",
+					frame.BORDER + frame.SPACING + postOffset,
+					-(preOffset + frame.ENERGYBAR_OFFSET + frame.CLASSBAR_YOFFSET) --+ frame.BORDER - frame.SPACING)
+				)
+				energy:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT",
+					-(frame.BORDER + frame.SPACING + postOffset),
+					frame.BORDER + frame.SPACING + postOffset
+				)
 			else
-				energy:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.ENERGYBAR_OFFSET - (frame.HAPPINESS_WIDTH or 0), -frame.ENERGYBAR_OFFSET)
-				energy:Point("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT", -frame.ENERGYBAR_OFFSET, -frame.ENERGYBAR_OFFSET)
+				energy:Point("TOPLEFT", anchor, "TOPLEFT", -frame.ENERGYBAR_OFFSET - (frame.HAPPINESS_WIDTH or 0), -frame.ENERGYBAR_OFFSET)
+				energy:Point("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", -frame.ENERGYBAR_OFFSET, -frame.ENERGYBAR_OFFSET)
 			end
 			energy:SetFrameLevel(frame.Health:GetFrameLevel() - 5) --Health uses 10
 		elseif frame.USE_INSET_ENERGYBAR then
@@ -183,22 +202,22 @@ function UF:Configure_Energy(frame)
 
 			if frame.ORIENTATION == "LEFT" then
 				energy:Width(frame.ENERGYBAR_WIDTH - frame.BORDER * 2)
-				energy:Point("TOPRIGHT", frame, "BOTTOMRIGHT",
+				energy:Point("TOPRIGHT", frame.Health, "BOTTOMRIGHT",
 					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)
 			elseif frame.ORIENTATION == "RIGHT" then
 				energy:Width(frame.ENERGYBAR_WIDTH - frame.BORDER*2)
-				energy:Point("TOPLEFT", frame, "BOTTOMLEFT",
+				energy:Point("TOPLEFT", frame.Health, "BOTTOMLEFT",
 					frame.BORDER * 2 + 4 + (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)
 			else
-				energy:Point("TOPLEFT", frame, "BOTTOMLEFT",
+				energy:Point("TOPLEFT", frame.Health, "BOTTOMLEFT",
 					frame.BORDER * 2 + 4,
 					yPos
 				)
-				energy:Point("TOPRIGHT", frame, "BOTTOMRIGHT",
+				energy:Point("TOPRIGHT", frame.Health, "BOTTOMRIGHT",
 					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)

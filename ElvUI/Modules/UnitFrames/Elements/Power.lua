@@ -137,14 +137,59 @@ function UF:Configure_Power(frame)
 			power:SetFrameLevel(50) --RaisedElementParent uses 100, we want lower value to allow certain icons and texts to appear above power
 		elseif frame.USE_POWERBAR_OFFSET then
 			if frame.ORIENTATION == "LEFT" then
-				power:Point("TOPRIGHT", frame.Health, "TOPRIGHT", frame.POWERBAR_OFFSET + (frame.HAPPINESS_WIDTH or 0), -frame.POWERBAR_OFFSET)
-				power:Point("BOTTOMLEFT", frame.Health, "BOTTOMLEFT", frame.POWERBAR_OFFSET, -frame.POWERBAR_OFFSET)
+				power:Point("TOPRIGHT", frame.Health, "TOPRIGHT",
+					frame.POWERBAR_OFFSET + (frame.HAPPINESS_WIDTH or 0),
+					-frame.POWERBAR_OFFSET
+				)
+				power:Point("BOTTOMLEFT", frame.Health, "BOTTOMLEFT",
+					frame.POWERBAR_OFFSET,
+					-frame.POWERBAR_OFFSET
+				)
 			elseif frame.ORIENTATION == "MIDDLE" then
-				power:Point("TOPLEFT", frame, "TOPLEFT", frame.BORDER + frame.SPACING, -frame.POWERBAR_OFFSET - frame.CLASSBAR_YOFFSET)
-				power:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -frame.BORDER - frame.SPACING, frame.BORDER)
+				local totalOffset = 0
+				if frame.USE_ENERGYBAR and frame.USE_ENERGYBAR_OFFSET then
+					totalOffset = totalOffset + frame.ENERGYBAR_OFFSET
+				end
+				if frame.USE_RAGEBAR and frame.USE_RAGEBAR_OFFSET then
+					totalOffset = totalOffset + frame.RAGEBAR_OFFSET
+				end
+
+				power:Point("TOPLEFT", frame, "TOPLEFT",
+					frame.BORDER + frame.SPACING + totalOffset,
+					-(frame.POWERBAR_OFFSET + frame.CLASSBAR_YOFFSET) --+ frame.BORDER - frame.SPACING)
+				)
+				power:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT",
+					-(frame.BORDER + frame.SPACING + totalOffset),
+					frame.BORDER + frame.SPACING + totalOffset
+				)
+
+				--power.WIDTH = power.WIDTH - (frame.BORDER + frame.SPACING + totalOffset) - (frame.BORDER + frame.SPACING + totalOffset)
+				--power.HEIGHT = power.HEIGHT - (frame.BORDER + frame.SPACING + frame.CLASSBAR_YOFFSET) - (frame.BORDER + frame.SPACING + totalOffset)
+
+				--[[local totalOffset = 0
+				if frame.USE_ENERGYBAR_OFFSET then
+					totalOffset = totalOffset + frame.ENERGYBAR_OFFSET
+				end
+				if frame.USE_RAGEBAR_OFFSET then
+					totalOffset = totalOffset + frame.RAGEBAR_OFFSET
+				end
+				power:Point("TOPLEFT", frame, "TOPLEFT",
+					frame.BORDER + frame.SPACING,
+					-frame.POWERBAR_OFFSET - frame.CLASSBAR_YOFFSET
+				)
+				power:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT",
+					-frame.BORDER - frame.SPACING,
+					frame.BORDER
+				)]]
 			else
-				power:Point("TOPLEFT", frame.Health, "TOPLEFT", -frame.POWERBAR_OFFSET - (frame.HAPPINESS_WIDTH or 0), -frame.POWERBAR_OFFSET)
-				power:Point("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT", -frame.POWERBAR_OFFSET, -frame.POWERBAR_OFFSET)
+				power:Point("TOPLEFT", frame.Health, "TOPLEFT",
+					-frame.POWERBAR_OFFSET - (frame.HAPPINESS_WIDTH or 0),
+					-frame.POWERBAR_OFFSET
+				)
+				power:Point("BOTTOMRIGHT", frame.Health, "BOTTOMRIGHT",
+					-frame.POWERBAR_OFFSET,
+					-frame.POWERBAR_OFFSET
+				)
 			end
 			power:SetFrameLevel(frame.Health:GetFrameLevel() - 5) --Health uses 10
 		elseif frame.USE_INSET_POWERBAR then
@@ -194,22 +239,22 @@ function UF:Configure_Power(frame)
 
 			if frame.ORIENTATION == "LEFT" then
 				power:Width(frame.POWERBAR_WIDTH - frame.BORDER * 2)
-				power:Point("TOPRIGHT", frame, "BOTTOMRIGHT",
+				power:Point("TOPRIGHT", frame.Health, "BOTTOMRIGHT",
 					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)
 			elseif frame.ORIENTATION == "RIGHT" then
 				power:Width(frame.POWERBAR_WIDTH - frame.BORDER * 2)
-				power:Point("TOPLEFT", frame, "BOTTOMLEFT",
+				power:Point("TOPLEFT", frame.Health, "BOTTOMLEFT",
 					frame.BORDER * 2 + 4 + (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)
 			else
-				power:Point("TOPLEFT", frame, "BOTTOMLEFT",
+				power:Point("TOPLEFT", frame.Health, "BOTTOMLEFT",
 					frame.BORDER * 2 + 4,
 					yPos
 				)
-				power:Point("TOPRIGHT", frame, "BOTTOMRIGHT",
+				power:Point("TOPRIGHT", frame.Health, "BOTTOMRIGHT",
 					-(frame.BORDER * 2 + 4) - (frame.HAPPINESS_WIDTH or 0),
 					yPos
 				)
