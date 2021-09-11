@@ -21,7 +21,8 @@ local function UpdateColor(self, event, unit)
 	local element = self.Energy
 
 	local ptype, ptoken, altR, altG, altB = UnitPowerType(unit)
-	local r, g, b, t
+	local r, g, b
+	local t = self.colors.power["ENERGY"]
 	if(element.colorDisconnected and element.disconnected) then
 		t = self.colors.disconnected
 	elseif(element.colorTapping and not UnitPlayerControlled(unit) and (UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) and not UnitIsTappedByAllThreatList(unit))) then
@@ -49,6 +50,8 @@ local function UpdateColor(self, event, unit)
 	elseif(element.colorSmooth) then
 		r, g, b = self:ColorGradient(element.cur or 1, element.max or 1, unpack(element.smoothGradient or self.colors.smooth))
 	end
+
+	print(t)
 
 	if(t) then
 		r, g, b = t[1], t[2], t[3]

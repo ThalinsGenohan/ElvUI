@@ -21,7 +21,8 @@ local function UpdateColor(self, event, unit)
 	local element = self.Rage
 
 	local ptype, ptoken, altR, altG, altB = UnitPowerType(unit)
-	local r, g, b, t
+	local r, g, b
+	local t = self.colors.power["RAGE"]
 	if(element.colorDisconnected and element.disconnected) then
 		t = self.colors.disconnected
 	elseif(element.colorTapping and not UnitPlayerControlled(unit) and (UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) and not UnitIsTappedByAllThreatList(unit))) then
