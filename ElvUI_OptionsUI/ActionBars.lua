@@ -325,108 +325,106 @@ local function BuildABConfig()
 			}
 		}
 	}
-	if E.myclass == "SHAMAN" then
-		group.barTotem = {
-			order = 2,
-			type = "group",
-			name = L["TUTORIAL_TITLE47"],
-			guiInline = false,
-			disabled = function() return not E.ActionBars.Initialized or not E.myclass == "SHAMAN" end,
-			get = function(info) return E.db.actionbar.barTotem[info[#info]] end,
-			set = function(info, value) E.db.actionbar.barTotem[info[#info]] = value AB:PositionAndSizeBarTotem() end,
-			args = {
-				info = {
-					order = 1,
-					type = "header",
-					name = L["TUTORIAL_TITLE47"]
+	group.barTotem = {
+		order = 2,
+		type = "group",
+		name = L["TUTORIAL_TITLE47"],
+		guiInline = false,
+		disabled = function() return not E.ActionBars.Initialized end,
+		get = function(info) return E.db.actionbar.barTotem[info[#info]] end,
+		set = function(info, value) E.db.actionbar.barTotem[info[#info]] = value AB:PositionAndSizeBarTotem() end,
+		args = {
+			info = {
+				order = 1,
+				type = "header",
+				name = L["TUTORIAL_TITLE47"]
+			},
+			enabled = {
+				order = 2,
+				type = "toggle",
+				name = L["Enable"],
+				set = function(info, value) E.db.actionbar.barTotem[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end
+			},
+			restorePosition = {
+				order = 3,
+				type = "execute",
+				name = L["Restore Bar"],
+				desc = L["Restore the actionbars default settings"],
+				func = function() E:CopyTable(E.db.actionbar.barTotem, P.actionbar.barTotem) E:ResetMovers(TUTORIAL_TITLE47) AB:PositionAndSizeBarTotem() end,
+				disabled = function() return not E.db.actionbar.barTotem.enabled end
+			},
+			spacer = {
+				order = 4,
+				type = "description",
+				name = " "
+			},
+			mouseover = {
+				order = 5,
+				type = "toggle",
+				name = L["Mouse Over"],
+				desc = L["The frame is not shown unless you mouse over the frame."],
+				disabled = function() return not E.db.actionbar.barTotem.enabled end
+			},
+			flyoutDirection = {
+				order = 6,
+				type = "select",
+				name = L["Flyout Direction"],
+				values = {
+					["UP"] = L["Up"],
+					["DOWN"] = L["Down"]
 				},
-				enabled = {
-					order = 2,
-					type = "toggle",
-					name = L["Enable"],
-					set = function(info, value) E.db.actionbar.barTotem[info[#info]] = value E:StaticPopup_Show("PRIVATE_RL") end
-				},
-				restorePosition = {
-					order = 3,
-					type = "execute",
-					name = L["Restore Bar"],
-					desc = L["Restore the actionbars default settings"],
-					func = function() E:CopyTable(E.db.actionbar.barTotem, P.actionbar.barTotem) E:ResetMovers(TUTORIAL_TITLE47) AB:PositionAndSizeBarTotem() end,
-					disabled = function() return not E.db.actionbar.barTotem.enabled end
-				},
-				spacer = {
-					order = 4,
-					type = "description",
-					name = " "
-				},
-				mouseover = {
-					order = 5,
-					type = "toggle",
-					name = L["Mouse Over"],
-					desc = L["The frame is not shown unless you mouse over the frame."],
-					disabled = function() return not E.db.actionbar.barTotem.enabled end
-				},
-				flyoutDirection = {
-					order = 6,
-					type = "select",
-					name = L["Flyout Direction"],
-					values = {
-						["UP"] = L["Up"],
-						["DOWN"] = L["Down"]
-					},
-					disabled = function() return not E.db.actionbar.barTotem.enabled end
-				},
-				buttonsize = {
-					order = 7,
-					type = "range",
-					name = L["Button Size"],
-					desc = L["The size of the action buttons."],
-					min = 15, max = 60, step = 1,
-					disabled = function() return not E.db.actionbar.barTotem.enabled end
-				},
-				buttonspacing = {
-					order = 8,
-					type = "range",
-					name = L["Button Spacing"],
-					desc = L["The spacing between buttons."],
-					min = -3, max = 40, step = 1,
-					disabled = function() return not E.db.actionbar.barTotem.enabled end
-				},
-				flyoutSpacing = {
-					order = 9,
-					type = "range",
-					name = L["Flyout Spacing"],
-					desc = L["The spacing between buttons."],
-					min = -3, max = 40, step = 1,
-					disabled = function() return not E.db.actionbar.barTotem.enabled end
-				},
-				alpha = {
-					order = 10,
-					type = "range",
-					name = L["Alpha"],
-					isPercent = true,
-					min = 0, max = 1, step = 0.01,
-					disabled = function() return not E.db.actionbar.barTotem.enabled end
-				},
-				visibility = {
-					order = 11,
-					type = "input",
-					name = L["Visibility State"],
-					desc = L["This works like a macro, you can run different situations to get the actionbar to show/hide differently.\n Example: '[combat] show;hide'"],
-					width = "full",
-					multiline = true,
-					set = function(info, value)
-						if value and value:match("[\n\r]") then
-							value = value:gsub("[\n\r]","")
-						end
-						E.db.actionbar.barTotem[info[#info]] = value
-						AB:PositionAndSizeBarTotem()
-					end,
-					disabled = function() return not E.db.actionbar.barTotem.enabled end
-				}
+				disabled = function() return not E.db.actionbar.barTotem.enabled end
+			},
+			buttonsize = {
+				order = 7,
+				type = "range",
+				name = L["Button Size"],
+				desc = L["The size of the action buttons."],
+				min = 15, max = 60, step = 1,
+				disabled = function() return not E.db.actionbar.barTotem.enabled end
+			},
+			buttonspacing = {
+				order = 8,
+				type = "range",
+				name = L["Button Spacing"],
+				desc = L["The spacing between buttons."],
+				min = -3, max = 40, step = 1,
+				disabled = function() return not E.db.actionbar.barTotem.enabled end
+			},
+			flyoutSpacing = {
+				order = 9,
+				type = "range",
+				name = L["Flyout Spacing"],
+				desc = L["The spacing between buttons."],
+				min = -3, max = 40, step = 1,
+				disabled = function() return not E.db.actionbar.barTotem.enabled end
+			},
+			alpha = {
+				order = 10,
+				type = "range",
+				name = L["Alpha"],
+				isPercent = true,
+				min = 0, max = 1, step = 0.01,
+				disabled = function() return not E.db.actionbar.barTotem.enabled end
+			},
+			visibility = {
+				order = 11,
+				type = "input",
+				name = L["Visibility State"],
+				desc = L["This works like a macro, you can run different situations to get the actionbar to show/hide differently.\n Example: '[combat] show;hide'"],
+				width = "full",
+				multiline = true,
+				set = function(info, value)
+					if value and value:match("[\n\r]") then
+						value = value:gsub("[\n\r]","")
+					end
+					E.db.actionbar.barTotem[info[#info]] = value
+					AB:PositionAndSizeBarTotem()
+				end,
+				disabled = function() return not E.db.actionbar.barTotem.enabled end
 			}
 		}
-	end
+	}
 	group.barPet = {
 		order = 3,
 		type = "group",
@@ -1072,7 +1070,6 @@ E.Options.args.actionbar = {
 			name = L["TUTORIAL_TITLE47"],
 			func = function() ACD:SelectGroup("ElvUI", "actionbar", "barTotem") end,
 			disabled = function() return not E.ActionBars.Initialized end,
-			hidden = E.myclass ~= "SHAMAN" and true or false
 		},
 		microbarShortcut = {
 			order = 11 - shamanOrder,

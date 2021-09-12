@@ -102,7 +102,7 @@ local activeHots, activePets = HealComm.activeHots, HealComm.activePets
 
 -- Figure out what they are now since a few things change based off of this
 local playerClass = select(2, UnitClass("player"))
-local isHealerClass = playerClass == "DRUID" or playerClass == "PRIEST" or playerClass == "SHAMAN" or playerClass == "PALADIN"
+local isHealerClass = true --playerClass == "DRUID" or playerClass == "PRIEST" or playerClass == "SHAMAN" or playerClass == "PALADIN"
 
 -- Stolen from Threat-2.0, compresses GUIDs from 18 characters to around 8 - 9, 50%/55% savings
 -- 44 = , / 58 = : / 255 = \255 / 0 = line break / 64 = @ / 254 = FE, used for escape code so has to be escaped
@@ -646,334 +646,370 @@ local CalculateHealing, GetHealTargets, AuraHandler, CalculateHotHealing, ResetC
 
 -- DRUIDS
 -- All data is accurate as of 3.2.2 (build 10392)
-if( playerClass == "DRUID" ) then
-	LoadClassData = function()
-		-- Rejuvenation
-		local Rejuvenation = GetSpellInfo(774)
-		hotData[Rejuvenation] = {interval = 3,
-			levels = {4, 10, 16, 22, 28, 34, 40, 46, 52, 58, 60, 63, 69, 75, 80}, averages = {32, 56, 116, 180, 244, 304, 388, 488, 608, 756, 888, 932, 1060, 1192, 1690}}
-		-- Regrowth
-		local Regrowth = GetSpellInfo(8936)
-		hotData[Regrowth] = {interval = 3, ticks = 7, coeff = 1.316,
-			levels = {12, 18, 24, 30, 36, 42, 48, 54, 60, 65, 71, 77}, averages = {98, 175, 259, 343, 427, 546, 686, 861, 1064, 1274, 1792, 2345}}
-		-- Lifebloom
-		local Lifebloom = GetSpellInfo(33763)
-		hotData[Lifebloom] = {interval = 1, ticks = 7, coeff = 0.66626, dhCoeff = 0.34324 * 0.8, levels = {64, 72, 80}, averages = {224, 287, 371}, bomb = {480, 616, 776}}
-		-- Wild Growth
-		local WildGrowth = GetSpellInfo(48438)
-		hotData[WildGrowth] = {interval = 1, ticks = 7, coeff = 0.8056, levels = {60, 70, 75, 80}, averages = {686, 861, 1239, 1442}}
+LoadClassData = function()
+	-- Rejuvenation
+	local Rejuvenation = GetSpellInfo(774)
+	hotData[Rejuvenation] = {
+		interval = 3,
+		levels = { 4, 10, 16, 22, 28, 34, 40, 46, 52, 58, 60, 63, 69, 75, 80 },
+		averages = { 32, 56, 116, 180, 244, 304, 388, 488, 608, 756, 888, 932, 1060, 1192, 1690 }
+	}
+	-- Regrowth
+	local Regrowth = GetSpellInfo(8936)
+	hotData[Regrowth] = {
+		interval = 3,
+		ticks = 7,
+		coeff = 1.316,
+		levels = { 12, 18, 24, 30, 36, 42, 48, 54, 60, 65, 71, 77 },
+		averages = { 98, 175, 259, 343, 427, 546, 686, 861, 1064, 1274, 1792, 2345 }
+	}
+	-- Lifebloom
+	local Lifebloom = GetSpellInfo(33763)
+	hotData[Lifebloom] = {
+		interval = 1,
+		ticks = 7,
+		coeff = 0.66626,
+		dhCoeff = 0.34324 * 0.8,
+		levels = { 64, 72, 80 },
+		averages = { 224, 287, 371 },
+		bomb = { 480, 616, 776 }
+	}
+	-- Wild Growth
+	local WildGrowth = GetSpellInfo(48438)
+	hotData[WildGrowth] = {
+		interval = 1,
+		ticks = 7,
+		coeff = 0.8056,
+		levels = { 60, 70, 75, 80 },
+		averages = { 686, 861, 1239, 1442 }
+	}
 
-		-- Regrowth
-		spellData[Regrowth] = {coeff = 0.2867,
-			levels = hotData[Regrowth].levels,
-			averages = {avg(84, 98), avg(164, 188), avg(240, 274), avg(318, 360), avg(405, 457), avg(511, 575), avg(646, 724), avg(809, 905), avg(1003, 1119), avg(1215, 1355), avg(1710, 1908), avg(2234, 2494)},
-			increase = {122, 155, 173, 180, 180, 178, 169, 156, 136, 115, 97, 23}}
-		-- Healing Touch
-		local HealingTouch = GetSpellInfo(5185)
-		spellData[HealingTouch] = {
-			levels = {1, 8, 14, 20, 26, 32, 38, 44, 50, 56, 60, 62, 69, 74, 79},
-			averages = {avg(37, 51), avg(88, 112), avg(195, 243), avg(363, 445), avg(490, 594), avg(636, 766), avg(802, 960), avg(1199, 1427), avg(1299, 1539), avg(1620, 1912), avg(1944, 2294), avg(2026, 2392), avg(2321, 2739), avg(3223, 3805), avg(3750, 4428)}}
-		-- Nourish
-		local Nourish = GetSpellInfo(50464)
-		spellData[Nourish] = {coeff = 0.358005, levels = {80}, averages = {avg(1883, 2187)}}
-		-- Tranquility
-		local Tranquility = GetSpellInfo(740)
-		spellData[Tranquility] = {coeff = 1.144681, ticks = 4, levels = {30, 40, 50, 60, 70, 75, 80}, averages = {351, 515, 765, 1097, 1518, 2598, 3035}}
+	-- Regrowth
+	spellData[Regrowth] = {
+		coeff = 0.2867,
+		levels = hotData[Regrowth].levels,
+		averages = { avg(84, 98), avg(164, 188), avg(240, 274), avg(318, 360), avg(405, 457), avg(511, 575), avg(646, 724), avg(809, 905), avg(1003, 1119), avg(1215, 1355), avg(1710, 1908), avg(2234, 2494) },
+		increase = { 122, 155, 173, 180, 180, 178, 169, 156, 136, 115, 97, 23 }
+	}
+	-- Healing Touch
+	local HealingTouch = GetSpellInfo(5185)
+	spellData[HealingTouch] = {
+		levels = { 1, 8, 14, 20, 26, 32, 38, 44, 50, 56, 60, 62, 69, 74, 79 },
+		averages = { avg(37, 51), avg(88, 112), avg(195, 243), avg(363, 445), avg(490, 594), avg(636, 766), avg(802, 960), avg(1199, 1427), avg(1299, 1539), avg(1620, 1912), avg(1944, 2294), avg(2026, 2392), avg(2321, 2739), avg(3223, 3805), avg(3750, 4428) }
+	}
+	-- Nourish
+	local Nourish = GetSpellInfo(50464)
+	spellData[Nourish] = {
+		coeff = 0.358005,
+		levels = { 80 },
+		averages = { avg(1883, 2187) }
+	}
+	-- Tranquility
+	local Tranquility = GetSpellInfo(740)
+	spellData[Tranquility] = {
+		coeff = 1.144681,
+		ticks = 4,
+		levels = { 30, 40, 50, 60, 70, 75, 80 },
+		averages = { 351, 515, 765, 1097, 1518, 2598, 3035 }
+	}
 
-		-- Talent data, these are filled in later and modified on talent changes
-		-- Master Shapeshifter (Multi)
-		local MasterShapeshifter = GetSpellInfo(48411)
-		talentData[MasterShapeshifter] = {mod = 0.02, current = 0}
-		-- Gift of Nature (Add)
-		local GiftofNature = GetSpellInfo(17104)
-		talentData[GiftofNature] = {mod = 0.02, current = 0}
-		-- Empowered Touch (Add, increases spell power HT/Nourish gains)
-		local EmpoweredTouch = GetSpellInfo(33879)
-		talentData[EmpoweredTouch] = {mod = 0.2, current = 0}
-		-- Empowered Rejuvenation (Multi, this ups both the direct heal and the hot)
-		local EmpoweredRejuv = GetSpellInfo(33886)
-		talentData[EmpoweredRejuv] = {mod = 0.04, current = 0}
-		-- Genesis (Add)
-		local Genesis = GetSpellInfo(57810)
-		talentData[Genesis] = {mod = 0.01, current = 0}
-		-- Improved Rejuvenation (Add)
-		local ImprovedRejuv = GetSpellInfo(17111)
-		talentData[ImprovedRejuv] = {mod = 0.05, current = 0}
-		-- Nature's Splendor (+3s Rejuv/+6s Regrowth/+2s Lifebloom)
-		local NaturesSplendor = GetSpellInfo(57865)
-		talentData[NaturesSplendor] = {mod = 1, current = 0}
+	-- Talent data, these are filled in later and modified on talent changes
+	-- Master Shapeshifter (Multi)
+	local MasterShapeshifter = GetSpellInfo(48411)
+	talentData[MasterShapeshifter] = { mod = 0.02, current = 0 }
 
-		local TreeofLife = GetSpellInfo(33891)
-		local Innervate = GetSpellInfo(29166)
+	-- Gift of Nature (Add)
+	local GiftofNature = GetSpellInfo(17104)
+	talentData[GiftofNature] = { mod = 0.02, current = 0 }
 
-		-- Set data
-		-- 2 piece, +6 seconds to Regrowth
-		itemSetsData["T5 Resto"] = {30216, 30217, 30219, 30220, 30221}
-		-- +5% more healing to Nourish per hot
-		itemSetsData["T7 Resto"] = {40460, 40461, 40462, 40463, 40465, 39531, 39538, 39539, 39542, 39543}
-		--itemSetsData["T8 Resto"] = {46183, 46184, 46185, 46186, 46187, 45345, 45346, 45347, 45348, 45349}
-		--itemSetsData["T9 Resto"] = {48102, 48129, 48130, 48131, 48132, 48153, 48154, 48155, 48156, 48157, 48133, 48134, 48135, 48136, 48137, 48142, 48141, 48140, 48139, 48138, 48152, 48151, 48150, 48149, 48148, 48143, 48144, 48145, 48146, 48147}
-		-- 2 piece, 30% less healing lost on WG
-		itemSetsData["T10 Resto"] = {50106, 50107, 50108, 50109, 50113, 51139, 51138, 51137, 51136, 51135, 51300, 51301, 51302, 51303, 51304}
+	-- Empowered Touch (Add, increases spell power HT/Nourish gains)
+	local EmpoweredTouch = GetSpellInfo(33879)
+	talentData[EmpoweredTouch] = { mod = 0.2, current = 0 }
 
-		local bloomBombIdols = {[28355] = 87, [33076] = 105, [33841] = 116, [35021] = 131, [42576] = 188, [42577] = 217, [42578] = 246, [42579] = 294, [42580] = 376, [51423] = 448}
+	-- Empowered Rejuvenation (Multi, this ups both the direct heal and the hot)
+	local EmpoweredRejuv = GetSpellInfo(33886)
+	talentData[EmpoweredRejuv] = { mod = 0.04, current = 0 }
 
-		local hotTotals, hasRegrowth = {}, {}
-		AuraHandler = function(unit, guid)
-			hotTotals[guid] = 0
-			if( unitHasAura(unit, Rejuvenation) ) then hotTotals[guid] = hotTotals[guid] + 1 end
-			if( unitHasAura(unit, Lifebloom) ) then hotTotals[guid] = hotTotals[guid] + 1 end
-			if( unitHasAura(unit, WildGrowth) ) then hotTotals[guid] = hotTotals[guid] + 1 end
-			if( unitHasAura(unit, Regrowth) ) then
-				hasRegrowth[guid] = true
-				hotTotals[guid] = hotTotals[guid] + 1
-			else
-				hasRegrowth[guid] = nil
+	-- Genesis (Add)
+	local Genesis = GetSpellInfo(57810)
+	talentData[Genesis] = { mod = 0.01, current = 0 }
+
+	-- Improved Rejuvenation (Add)
+	local ImprovedRejuv = GetSpellInfo(17111)
+	talentData[ImprovedRejuv] = { mod = 0.05, current = 0 }
+
+	-- Nature's Splendor (+3s Rejuv/+6s Regrowth/+2s Lifebloom)
+	local NaturesSplendor = GetSpellInfo(57865)
+	talentData[NaturesSplendor] = { mod = 1, current = 0 }
+
+	local TreeofLife = GetSpellInfo(33891)
+	local Innervate = GetSpellInfo(29166)
+
+	-- Set data
+	-- 2 piece, +6 seconds to Regrowth
+	itemSetsData["T5 Resto"] = { 30216, 30217, 30219, 30220, 30221 }
+	-- +5% more healing to Nourish per hot
+	itemSetsData["T7 Resto"] = { 40460, 40461, 40462, 40463, 40465, 39531, 39538, 39539, 39542, 39543 }
+	--itemSetsData["T8 Resto"] = { 46183, 46184, 46185, 46186, 46187, 45345, 45346, 45347, 45348, 45349 }
+	--itemSetsData["T9 Resto"] = { 48102, 48129, 48130, 48131, 48132, 48153, 48154, 48155, 48156, 48157, 48133, 48134, 48135, 48136, 48137, 48142, 48141, 48140, 48139, 48138, 48152, 48151, 48150, 48149, 48148, 48143, 48144, 48145, 48146, 48147 }
+	-- 2 piece, 30% less healing lost on WG
+	itemSetsData["T10 Resto"] = { 50106, 50107, 50108, 50109, 50113, 51139, 51138, 51137, 51136, 51135, 51300, 51301, 51302, 51303, 51304 }
+
+	local bloomBombIdols = { [28355] = 87, [33076] = 105, [33841] = 116, [35021] = 131, [42576] = 188, [42577] = 217, [42578] = 246, [42579] = 294, [42580] = 376, [51423] = 448 }
+
+	local hotTotals, hasRegrowth = {}, {}
+	AuraHandler = function(unit, guid)
+		hotTotals[guid] = 0
+		if( unitHasAura(unit, Rejuvenation) ) then hotTotals[guid] = hotTotals[guid] + 1 end
+		if( unitHasAura(unit, Lifebloom) ) then hotTotals[guid] = hotTotals[guid] + 1 end
+		if( unitHasAura(unit, WildGrowth) ) then hotTotals[guid] = hotTotals[guid] + 1 end
+		if( unitHasAura(unit, Regrowth) ) then
+			hasRegrowth[guid] = true
+			hotTotals[guid] = hotTotals[guid] + 1
+		else
+			hasRegrowth[guid] = nil
+		end
+	end
+
+	GetHealTargets = function(bitType, guid, healAmount, spellName, hasVariableTicks)
+		-- Tranquility pulses on everyone within 30 yards, if they are in range of Innervate they'll get Tranquility
+		if( spellName == Tranquility ) then
+			local targets = compressGUID[playerGUID]
+			local playerGroup = guidToGroup[playerGUID]
+
+			for groupGUID, groupID in pairs(guidToGroup) do
+				if( groupID == playerGroup and playerGUID ~= groupGUID and not UnitHasVehicleUI(guidToUnit[groupID]) and IsSpellInRange(Innervate, guidToUnit[groupGUID]) == 1 ) then
+					targets = targets .. "," .. compressGUID[groupGUID]
+				end
 			end
+
+			return targets, healAmount
+		elseif( hasVariableTicks ) then
+			healAmount = tconcat(healAmount, "@")
 		end
 
-		GetHealTargets = function(bitType, guid, healAmount, spellName, hasVariableTicks)
-			-- Tranquility pulses on everyone within 30 yards, if they are in range of Innervate they'll get Tranquility
-			if( spellName == Tranquility ) then
-				local targets = compressGUID[playerGUID]
-				local playerGroup = guidToGroup[playerGUID]
+		return compressGUID[guid], healAmount
+	end
 
-				for groupGUID, groupID in pairs(guidToGroup) do
-					if( groupID == playerGroup and playerGUID ~= groupGUID and not UnitHasVehicleUI(guidToUnit[groupID]) and IsSpellInRange(Innervate, guidToUnit[groupGUID]) == 1 ) then
-						targets = targets .. "," .. compressGUID[groupGUID]
-					end
-				end
+	-- Calculate hot heals
+	local wgTicks = {}
+	CalculateHotHealing = function(guid, spellID)
+	local spellName, spellRank = GetSpellInfo(spellID)
+	local rank = HealComm.rankNumbers[spellRank]
+	local healAmount = hotData[spellName].averages[rank]
+	local spellPower = GetSpellBonusHealing()
+	local healModifier, spModifier = playerHealModifier, 1
+	local bombAmount, totalTicks
+	healModifier = healModifier + talentData[GiftofNature].current
+	healModifier = healModifier + talentData[Genesis].current
 
-				return targets, healAmount
-			elseif( hasVariableTicks ) then
-				healAmount = tconcat(healAmount, "@")
-			end
+	-- Master Shapeshifter does not apply directly when using Lifebloom
+	if( unitHasAura("player", TreeofLife) ) then
+		healModifier = healModifier * (1 + talentData[MasterShapeshifter].current)
 
-			return compressGUID[guid], healAmount
+		-- 32387 - Idol of the Raven Godess, +44 SP while in TOL
+		if( playerCurrentRelic == 32387 ) then
+			spellPower = spellPower + 44
+		end
+	end
+
+	-- Rejuvenation
+	if( spellName == Rejuvenation ) then
+		healModifier = healModifier + talentData[ImprovedRejuv].current
+
+		-- 25643 - Harold's Rejuvenation Broach, +86 Rejuv SP
+		if( playerCurrentRelic == 25643 ) then
+			spellPower = spellPower + 86
+		-- 22398 - Idol of Rejuvenation, +50 SP to Rejuv
+		elseif( playerCurrentRelic == 22398 ) then
+			spellPower = spellPower + 50
 		end
 
-		-- Calculate hot heals
-		local wgTicks = {}
-		CalculateHotHealing = function(guid, spellID)
-			local spellName, spellRank = GetSpellInfo(spellID)
-			local rank = HealComm.rankNumbers[spellRank]
-			local healAmount = hotData[spellName].averages[rank]
-			local spellPower = GetSpellBonusHealing()
-			local healModifier, spModifier = playerHealModifier, 1
-			local bombAmount, totalTicks
-			healModifier = healModifier + talentData[GiftofNature].current
-			healModifier = healModifier + talentData[Genesis].current
+		local duration, ticks
+		if( IS_BUILD30300 ) then
+			duration = 15
+			ticks = 5
+			totalTicks = 5
+		else
+			duration = rank > 14 and 15 or 12
+			ticks = duration / hotData[spellName].interval
+			totalTicks = ticks
+		end
 
-			-- Master Shapeshifter does not apply directly when using Lifebloom
-			if( unitHasAura("player", TreeofLife) ) then
-				healModifier = healModifier * (1 + talentData[MasterShapeshifter].current)
+		spellPower = spellPower * (((duration / 15) * 1.88) * (1 + talentData[EmpoweredRejuv].current))
+		spellPower = spellPower / ticks
+		healAmount = healAmount / ticks
 
-				-- 32387 - Idol of the Raven Godess, +44 SP while in TOL
-				if( playerCurrentRelic == 32387 ) then
-					spellPower = spellPower + 44
-				end
-			end
+		--38366 - Idol of Pure Thoughts, +33 SP base per tick
+		if( playerCurrentRelic == 38366 ) then
+			spellPower = spellPower + 33
+		end
 
-			-- Rejuvenation
-			if( spellName == Rejuvenation ) then
-				healModifier = healModifier + talentData[ImprovedRejuv].current
+		-- Nature's Splendor, +6 seconds
+		if( talentData[NaturesSplendor].mod >= 1 ) then totalTicks = totalTicks + 1 end
 
-				-- 25643 - Harold's Rejuvenation Broach, +86 Rejuv SP
-				if( playerCurrentRelic == 25643 ) then
-					spellPower = spellPower + 86
-				-- 22398 - Idol of Rejuvenation, +50 SP to Rejuv
-				elseif( playerCurrentRelic == 22398 ) then
-					spellPower = spellPower + 50
-				end
+		-- Regrowth
+		elseif( spellName == Regrowth ) then
+			spellPower = spellPower * (hotData[spellName].coeff * (1 + talentData[EmpoweredRejuv].current))
+			spellPower = spellPower / hotData[spellName].ticks
+			healAmount = healAmount / hotData[spellName].ticks
 
-				local duration, ticks
-				if( IS_BUILD30300 ) then
-					duration = 15
-					ticks = 5
-					totalTicks = 5
-				else
-					duration = rank > 14 and 15 or 12
-					ticks = duration / hotData[spellName].interval
-					totalTicks = ticks
-				end
-
-				spellPower = spellPower * (((duration / 15) * 1.88) * (1 + talentData[EmpoweredRejuv].current))
-				spellPower = spellPower / ticks
-				healAmount = healAmount / ticks
-
-				--38366 - Idol of Pure Thoughts, +33 SP base per tick
-				if( playerCurrentRelic == 38366 ) then
-					spellPower = spellPower + 33
-				end
-
-				-- Nature's Splendor, +6 seconds
-				if( talentData[NaturesSplendor].mod >= 1 ) then totalTicks = totalTicks + 1 end
-
-			-- Regrowth
-			elseif( spellName == Regrowth ) then
-				spellPower = spellPower * (hotData[spellName].coeff * (1 + talentData[EmpoweredRejuv].current))
-				spellPower = spellPower / hotData[spellName].ticks
-				healAmount = healAmount / hotData[spellName].ticks
-
-				totalTicks = 7
-				-- Nature's Splendor, +6 seconds
-				if( talentData[NaturesSplendor].mod >= 1 ) then totalTicks = totalTicks + 2 end
-				-- T5 Resto, +6 seconds
-				if( equippedSetCache["T5 Resto"] >= 2 ) then totalTicks = totalTicks + 2 end
+			totalTicks = 7
+			-- Nature's Splendor, +6 seconds
+			if( talentData[NaturesSplendor].mod >= 1 ) then totalTicks = totalTicks + 2 end
+			-- T5 Resto, +6 seconds
+			if( equippedSetCache["T5 Resto"] >= 2 ) then totalTicks = totalTicks + 2 end
 
 			-- Lifebloom
-			elseif( spellName == Lifebloom ) then
-				-- Figure out the bomb heal, apparently Gift of Nature double dips and will heal 10% for the HOT + 10% again for the direct heal
-				local bombSpellPower = spellPower
-				if( playerCurrentRelic and bloomBombIdols[playerCurrentRelic] ) then
-					bombSpellPower = bombSpellPower + bloomBombIdols[playerCurrentRelic]
-				end
-
-				local bombSpell = bombSpellPower * (hotData[spellName].dhCoeff * 1.88)
-				bombAmount = ceil(calculateGeneralAmount(hotData[spellName].levels[rank], hotData[spellName].bomb[rank], bombSpell, spModifier, healModifier + talentData[GiftofNature].current))
-
-				-- Figure out the hot tick healing
-				spellPower = spellPower * (hotData[spellName].coeff * (1 + talentData[EmpoweredRejuv].current))
-				spellPower = spellPower / hotData[spellName].ticks
-				healAmount = healAmount / hotData[spellName].ticks
-				-- Figure out total ticks
-				totalTicks = 7
-
-				-- Idol of Lush Moss, +125 SP per tick
-				if( playerCurrentRelic == 40711 ) then
-					spellPower = spellPower + 125
-				-- Idol of the Emerald Queen, +47 SP per tick
-				elseif( playerCurrentRelic == 27886 ) then
-					spellPower = spellPower + 47
-				end
-
-				-- Glyph of Lifebloom, +1 second
-				if( glyphCache[54826] ) then totalTicks = totalTicks + 1 end
-				-- Nature's Splendor, +2 seconds
-				if( talentData[NaturesSplendor].mod >= 1 ) then totalTicks = totalTicks + 1 end
-			-- Wild Growth
-			elseif( spellName == WildGrowth ) then
-				spellPower = spellPower * (hotData[spellName].coeff * (1 + talentData[EmpoweredRejuv].current))
-				spellPower = spellPower / hotData[spellName].ticks
-				spellPower = calculateSpellPower(hotData[spellName].levels[rank], spellPower)
-				healAmount = healAmount / hotData[spellName].ticks
-				healModifier = healModifier * HealComm.zoneHealModifier
-
-				twipe(wgTicks)
-				local tickModifier = equippedSetCache["T10 Resto"] >= 2 and 0.70 or 1
-				local tickAmount = healAmount / hotData[spellName].ticks
-				for i=1, hotData[spellName].ticks do
-					tinsert(wgTicks, ceil(healModifier * ((healAmount + tickAmount * (3 - (i - 1) * tickModifier)) + (spellPower * spModifier))))
-				end
-
-				return HOT_HEALS, wgTicks, hotData[spellName].ticks, hotData[spellName].interval, nil, true
+		elseif( spellName == Lifebloom ) then
+			-- Figure out the bomb heal, apparently Gift of Nature double dips and will heal 10% for the HOT + 10% again for the direct heal
+			local bombSpellPower = spellPower
+			if( playerCurrentRelic and bloomBombIdols[playerCurrentRelic] ) then
+				bombSpellPower = bombSpellPower + bloomBombIdols[playerCurrentRelic]
 			end
 
-			healAmount = calculateGeneralAmount(hotData[spellName].levels[rank], healAmount, spellPower, spModifier, healModifier)
-			return HOT_HEALS, ceil(healAmount), totalTicks, hotData[spellName].interval, bombAmount
+			local bombSpell = bombSpellPower * (hotData[spellName].dhCoeff * 1.88)
+			bombAmount = ceil(calculateGeneralAmount(hotData[spellName].levels[rank], hotData[spellName].bomb[rank], bombSpell, spModifier, healModifier + talentData[GiftofNature].current))
+
+			-- Figure out the hot tick healing
+			spellPower = spellPower * (hotData[spellName].coeff * (1 + talentData[EmpoweredRejuv].current))
+			spellPower = spellPower / hotData[spellName].ticks
+			healAmount = healAmount / hotData[spellName].ticks
+			-- Figure out total ticks
+			totalTicks = 7
+
+			-- Idol of Lush Moss, +125 SP per tick
+			if( playerCurrentRelic == 40711 ) then
+				spellPower = spellPower + 125
+			-- Idol of the Emerald Queen, +47 SP per tick
+			elseif( playerCurrentRelic == 27886 ) then
+				spellPower = spellPower + 47
+			end
+
+			-- Glyph of Lifebloom, +1 second
+			if( glyphCache[54826] ) then totalTicks = totalTicks + 1 end
+			-- Nature's Splendor, +2 seconds
+			if( talentData[NaturesSplendor].mod >= 1 ) then totalTicks = totalTicks + 1 end
+		-- Wild Growth
+		elseif( spellName == WildGrowth ) then
+			spellPower = spellPower * (hotData[spellName].coeff * (1 + talentData[EmpoweredRejuv].current))
+			spellPower = spellPower / hotData[spellName].ticks
+			spellPower = calculateSpellPower(hotData[spellName].levels[rank], spellPower)
+			healAmount = healAmount / hotData[spellName].ticks
+			healModifier = healModifier * HealComm.zoneHealModifier
+
+			twipe(wgTicks)
+			local tickModifier = equippedSetCache["T10 Resto"] >= 2 and 0.70 or 1
+			local tickAmount = healAmount / hotData[spellName].ticks
+			for i=1, hotData[spellName].ticks do
+				tinsert(wgTicks, ceil(healModifier * ((healAmount + tickAmount * (3 - (i - 1) * tickModifier)) + (spellPower * spModifier))))
+			end
+
+			return HOT_HEALS, wgTicks, hotData[spellName].ticks, hotData[spellName].interval, nil, true
 		end
 
-		-- Calcualte direct and channeled heals
-		CalculateHealing = function(guid, spellName, spellRank)
-			local healAmount = averageHeal[spellName][spellRank]
-			local spellPower = GetSpellBonusHealing()
-			local healModifier, spModifier = playerHealModifier, 1
-			local rank = HealComm.rankNumbers[spellRank]
+		healAmount = calculateGeneralAmount(hotData[spellName].levels[rank], healAmount, spellPower, spModifier, healModifier)
+		return HOT_HEALS, ceil(healAmount), totalTicks, hotData[spellName].interval, bombAmount
+	end
 
-			-- Gift of Nature
-			healModifier = healModifier + talentData[GiftofNature].current
+	-- Calcualte direct and channeled heals
+	CalculateHealing = function(guid, spellName, spellRank)
+		local healAmount = averageHeal[spellName][spellRank]
+		local spellPower = GetSpellBonusHealing()
+		local healModifier, spModifier = playerHealModifier, 1
+		local rank = HealComm.rankNumbers[spellRank]
 
-			-- Master Shapeshifter does not apply directly when using Lifebloom
-			if( unitHasAura("player", TreeofLife) ) then
-				healModifier = healModifier * (1 + talentData[MasterShapeshifter].current)
+		-- Gift of Nature
+		healModifier = healModifier + talentData[GiftofNature].current
 
-				-- 32387 - Idol of the Raven Godess, +44 SP while in TOL
-				if( playerCurrentRelic == 32387 ) then
-					spellPower = spellPower + 44
-				end
+		-- Master Shapeshifter does not apply directly when using Lifebloom
+		if( unitHasAura("player", TreeofLife) ) then
+			healModifier = healModifier * (1 + talentData[MasterShapeshifter].current)
+
+			-- 32387 - Idol of the Raven Godess, +44 SP while in TOL
+			if( playerCurrentRelic == 32387 ) then
+				spellPower = spellPower + 44
 			end
-
-			-- Regrowth
-			if( spellName == Regrowth ) then
-				-- Glyph of Regrowth - +20% if target has Regrowth
-				if( glyphCache[54743] and hasRegrowth[guid] ) then
-					healModifier = healModifier * 1.20
-				end
-
-				spellPower = spellPower * ((spellData[spellName].coeff * 1.88) * (1 + talentData[EmpoweredRejuv].current))
-			-- Nourish
-			elseif( spellName == Nourish ) then
-				-- 46138 - Idol of Flourishing Life, +187 Nourish SP
-				if( playerCurrentRelic == 46138 ) then
-					spellPower = spellPower + 187
-				end
-
-				-- Apply any hot specific bonuses
-				local hots = hotTotals[guid]
-				if( hots and hots > 0 ) then
-					local bonus = 1.20
-
-					-- T7 Resto, +5% healing per each of the players hot on their target
-					if( equippedSetCache["T7 Resto"] >= 2 ) then
-						bonus = bonus + 0.05 * hots
-					end
-
-					-- Glyph of Nourish - 6% per HoT
-					if( glyphCache[62971] ) then
-						bonus = bonus + 0.06 * hots
-					end
-
-					healModifier = healModifier * bonus
-				end
-
-				spellPower = spellPower * ((spellData[spellName].coeff * 1.88) + talentData[EmpoweredTouch].spent * 0.10)
-			-- Healing Touch
-			elseif( spellName == HealingTouch ) then
-				-- Glyph of Healing Touch, -50% healing
-				if( glyphCache[54825] ) then
-					healModifier = healModifier - 0.50
-				end
-
-				-- Idol of the Avian Heart, +136 baseh ealing
-				if( playerCurrentRelic == 28568 ) then
-					healAmount = healAmount + 136
-				-- Idol of Health, +100 base healing
-				elseif( playerCurrentRelic == 22399 ) then
-					healAmount = healAmount + 100
-				end
-
-				-- Rank 1 - 3: 1.5/2/2.5 cast time, Rank 4+: 3 cast time
-				local castTime = rank > 3 and 3 or rank == 3 and 2.5 or rank == 2 and 2 or 1.5
-				spellPower = spellPower * (((castTime / 3.5) * 1.88) + talentData[EmpoweredTouch].current)
-
-			-- Tranquility
-			elseif( spellName == Tranquility ) then
-				healModifier = healModifier + talentData[Genesis].current
-
-				spellPower = spellPower * ((spellData[spellName].coeff * 1.88) * (1 + talentData[EmpoweredRejuv].current))
-				spellPower = spellPower / spellData[spellName].ticks
-			end
-
-			healAmount = calculateGeneralAmount(spellData[spellName].levels[rank], healAmount, spellPower, spModifier, healModifier)
-
-			-- 100% chance to crit with Nature, this mostly just covers fights like Loatheb where you will basically have 100% crit
-			if( GetSpellCritChance(4) >= 100 ) then
-				healAmount = healAmount * 1.50
-			end
-
-			if( spellData[spellName].ticks ) then
-				return CHANNEL_HEALS, ceil(healAmount), spellData[spellName].ticks, spellData[spellName].ticks
-			end
-
-			return DIRECT_HEALS, ceil(healAmount)
 		end
+
+		-- Regrowth
+		if( spellName == Regrowth ) then
+			-- Glyph of Regrowth - +20% if target has Regrowth
+			if( glyphCache[54743] and hasRegrowth[guid] ) then
+				healModifier = healModifier * 1.20
+			end
+
+			spellPower = spellPower * ((spellData[spellName].coeff * 1.88) * (1 + talentData[EmpoweredRejuv].current))
+		-- Nourish
+		elseif( spellName == Nourish ) then
+			-- 46138 - Idol of Flourishing Life, +187 Nourish SP
+			if( playerCurrentRelic == 46138 ) then
+				spellPower = spellPower + 187
+			end
+
+			-- Apply any hot specific bonuses
+			local hots = hotTotals[guid]
+			if( hots and hots > 0 ) then
+				local bonus = 1.20
+
+				-- T7 Resto, +5% healing per each of the players hot on their target
+				if( equippedSetCache["T7 Resto"] >= 2 ) then
+					bonus = bonus + 0.05 * hots
+				end
+
+				-- Glyph of Nourish - 6% per HoT
+				if( glyphCache[62971] ) then
+					bonus = bonus + 0.06 * hots
+				end
+
+				healModifier = healModifier * bonus
+			end
+
+			spellPower = spellPower * ((spellData[spellName].coeff * 1.88) + talentData[EmpoweredTouch].spent * 0.10)
+		-- Healing Touch
+		elseif( spellName == HealingTouch ) then
+			-- Glyph of Healing Touch, -50% healing
+			if( glyphCache[54825] ) then
+				healModifier = healModifier - 0.50
+			end
+
+			-- Idol of the Avian Heart, +136 baseh ealing
+			if( playerCurrentRelic == 28568 ) then
+				healAmount = healAmount + 136
+			-- Idol of Health, +100 base healing
+			elseif( playerCurrentRelic == 22399 ) then
+				healAmount = healAmount + 100
+			end
+
+			-- Rank 1 - 3: 1.5/2/2.5 cast time, Rank 4+: 3 cast time
+			local castTime = rank > 3 and 3 or rank == 3 and 2.5 or rank == 2 and 2 or 1.5
+			spellPower = spellPower * (((castTime / 3.5) * 1.88) + talentData[EmpoweredTouch].current)
+
+		-- Tranquility
+		elseif( spellName == Tranquility ) then
+			healModifier = healModifier + talentData[Genesis].current
+
+			spellPower = spellPower * ((spellData[spellName].coeff * 1.88) * (1 + talentData[EmpoweredRejuv].current))
+			spellPower = spellPower / spellData[spellName].ticks
+		end
+
+		healAmount = calculateGeneralAmount(spellData[spellName].levels[rank], healAmount, spellPower, spModifier, healModifier)
+
+		-- 100% chance to crit with Nature, this mostly just covers fights like Loatheb where you will basically have 100% crit
+		if( GetSpellCritChance(4) >= 100 ) then
+			healAmount = healAmount * 1.50
+		end
+
+		if( spellData[spellName].ticks ) then
+			return CHANNEL_HEALS, ceil(healAmount), spellData[spellName].ticks, spellData[spellName].ticks
+		end
+
+		return DIRECT_HEALS, ceil(healAmount)
 	end
 end
 
 -- PALADINS
 -- All data is accurate as of 3.2.2 (build 10392)
-if( playerClass == "PALADIN" ) then
-	LoadClassData = function()
 		-- Hot data, this is just so it realizes that FoL can be a hot so it will call the calculator
 		--local FlashofLight = GetSpellInfo(19750)
 		--hotData[FlashofLight] = true
@@ -1096,13 +1132,9 @@ if( playerClass == "PALADIN" ) then
 
 			return DIRECT_HEALS, ceil(healAmount)
 		end
-	end
-end
 
 -- PRIESTS
 -- Accurate as of 3.2.2 (build 10392)
-if( playerClass == "PRIEST" ) then
-	LoadClassData = function()
 		-- Hot data
 		local Renew = GetSpellInfo(139)
 		hotData[Renew] = {coeff = 1, interval = 3, ticks = 5, levels = {8, 14, 20, 26, 32, 38, 44, 50, 56, 60, 65, 70, 75, 80}, averages = {45, 100, 175, 245, 315, 400, 510, 650, 810, 970, 1010, 1110, 1235, 1400}}
@@ -1293,13 +1325,9 @@ if( playerClass == "PRIEST" ) then
 
 			return DIRECT_HEALS, ceil(healAmount)
 		end
-	end
-end
 
 -- SHAMANS
 -- All spells accurate as of 3.2.2 (build 10392)
-if( playerClass == "SHAMAN" ) then
-	LoadClassData = function()
 		-- Hot data
 		-- Riptide
 		local Riptide = GetSpellInfo(61295)
@@ -1478,8 +1506,6 @@ if( playerClass == "SHAMAN" ) then
 			-- Apply the final modifier of any MS or self heal increasing effects
 			return DIRECT_HEALS, ceil(healAmount)
 		end
-	end
-end
 
 if( select(2, UnitRace("player")) == "Draenei") or true then
 	local GetSpellBonusDamage = GetSpellBonusDamage

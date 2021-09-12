@@ -11,8 +11,6 @@ local MAX_COMBO_POINTS = MAX_COMBO_POINTS
 
 local CombobarDetached
 function UF:CombobarDetachedUpdate()
-	if E.myclass ~= "DRUID" then return end
-
 	if ElvUF_Target.CLASSBAR_DETACHED and UF.db.units.target.combobar.parent == "UIPARENT" then
 		if not CombobarDetached then
 			CombobarDetached = CreateFrame("Frame", nil, UIParent)
@@ -60,15 +58,13 @@ function UF:Construct_Combobar(frame)
 	frame:RegisterEvent("UNIT_ENTERED_VEHICLE", UF.UpdateComboDisplay)
 	frame:RegisterEvent("UNIT_EXITING_VEHICLE", UF.UpdateComboDisplay)
 
-	if E.myclass == "DRUID" then
-		frame:RegisterEvent("UPDATE_SHAPESHIFT_FORM", UF.UpdateComboDisplay)
+	frame:RegisterEvent("UPDATE_SHAPESHIFT_FORM", UF.UpdateComboDisplay)
 
-		frame:RegisterEvent("PLAYER_ENTERING_WORLD", function()
-			E:ShapeshiftDelayedUpdate(ElvUF_Target.ComboPoints.Override, ElvUF_Target)
-		end)
+	frame:RegisterEvent("PLAYER_ENTERING_WORLD", function()
+		E:ShapeshiftDelayedUpdate(ElvUF_Target.ComboPoints.Override, ElvUF_Target)
+	end)
 
-		self:CombobarDetachedUpdate()
-	end
+	self:CombobarDetachedUpdate()
 
 	ComboPoints.Override = UF.UpdateComboDisplay
 	ComboPoints:SetScript("OnShow", UF.ToggleResourceBar)

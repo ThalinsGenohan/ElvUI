@@ -270,9 +270,7 @@ function E:SetupLayout(layout, noDataReset, noDisplayMsg)
 		E.db.movers.ElvAB_2 = "BOTTOM,ElvUIParent,BOTTOM,0,4"
 		E.db.movers.ElvAB_3 = "BOTTOM,ElvUIParent,BOTTOM,0,138"
 		E.db.movers.ElvAB_5 = "BOTTOM,ElvUIParent,BOTTOM,-92,57"
-		if E.myclass == "SHAMAN" then
-			E.db.movers.ElvBar_Totem = "BOTTOM,ElvUIParent,BOTTOM,0,55"
-		end
+		E.db.movers.ElvBar_Totem = "BOTTOM,ElvUIParent,BOTTOM,0,55"
 		E.db.movers.ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,342,59"
 		E.db.movers.ElvUF_PartyMover = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,4,248"
 		E.db.movers.ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-341,99"

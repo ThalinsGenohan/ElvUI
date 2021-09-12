@@ -916,10 +916,8 @@ function E:UpdateAll(ignoreInstall)
 	Threat:ToggleEnable()
 	Threat:UpdatePosition()
 
-	if E.myclass == "SHAMAN" then
-		Totems:ToggleEnable()
-		Totems:PositionAndSize()
-	end
+	Totems:ToggleEnable()
+	Totems:PositionAndSize()
 
 	if E.private.unitframe.enable then
 		UnitFrames:Update_AllFrames()

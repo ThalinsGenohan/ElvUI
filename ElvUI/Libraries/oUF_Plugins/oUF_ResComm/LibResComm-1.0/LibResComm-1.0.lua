@@ -111,7 +111,7 @@ end
 
 local playerName = UnitName("player")
 local _, playerClass = UnitClass("player")
-local isResser = (playerClass == "PRIEST") or (playerClass == "SHAMAN") or (playerClass == "PALADIN") or (playerClass == "DRUID")
+local isResser = true --(playerClass == "PRIEST") or (playerClass == "SHAMAN") or (playerClass == "PALADIN") or (playerClass == "DRUID")
 
 -- Last target name from UNIT_SPELLCAST_SENT
 local sentTargetName = nil
@@ -129,17 +129,11 @@ local isCasting = nil
 -- Tracking resses
 local activeRes = {}
 
-local resSpell, combatResSpell -- avoid creating tables we're just going to discard immediately
-if playerClass == "DRUID" then
-	resSpell = GetSpellInfo(50769) -- Revive
-	combatResSpell = GetSpellInfo(20484) -- Rebirth
-elseif playerClass == "PALADIN" then
-	resSpell = GetSpellInfo(7328) -- Redemption
-elseif playerClass == "PRIEST" then
-	resSpell = GetSpellInfo(2006) -- Resurrection
-elseif playerClass == "SHAMAN" then
-	resSpell = GetSpellInfo(2008) -- Ancestral Spirit
-end
+local revive = GetSpellInfo(50769) -- Revive
+local rebirth = GetSpellInfo(20484) -- Rebirth
+local redemption = GetSpellInfo(7328) -- Redemption
+local resurrection = GetSpellInfo(2006) -- Resurrection
+local ancestralSpirit = GetSpellInfo(2008) -- Ancestral Spirit
 
 ------------------------------------------------------------------------
 --	Utilities
@@ -161,7 +155,12 @@ end
 
 function lib.eventFrame:UNIT_SPELLCAST_START(unit, spellName)
 	if unit ~= "player" then return end
-	if spellName ~= resSpell and spellName ~= combatResSpell then return end
+	if spellName ~= revive and
+	   spellName ~= rebirth and
+	   spellName ~= redemption and
+	   spellName ~= resurrection and
+	   spellName ~= ancestralSpirit
+	   then return end
 
 	isCasting = true
 
