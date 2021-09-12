@@ -1006,7 +1006,7 @@ LoadClassData = function()
 
 		return DIRECT_HEALS, ceil(healAmount)
 	end
-end
+
 
 -- PALADINS
 -- All data is accurate as of 3.2.2 (build 10392)
@@ -1506,6 +1506,7 @@ end
 			-- Apply the final modifier of any MS or self heal increasing effects
 			return DIRECT_HEALS, ceil(healAmount)
 		end
+end
 
 if( select(2, UnitRace("player")) == "Draenei") or true then
 	local GetSpellBonusDamage = GetSpellBonusDamage
