@@ -182,7 +182,6 @@ function UF:Configure_Rage(frame)
 				totalHeight = totalHeight + (frame.ENERGYBAR_HEIGHT - frame.BORDER)
 			end
 			local yPos = -(totalHeight / 2) + (frame.RAGEBAR_HEIGHT - frame.BORDER)
-			print("Rage:   "..yPos)
 
 			if frame.ORIENTATION == "LEFT" then
 				rage:Width(frame.RAGEBAR_WIDTH - frame.BORDER * 2)

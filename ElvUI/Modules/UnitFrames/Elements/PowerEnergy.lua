@@ -198,7 +198,6 @@ function UF:Configure_Energy(frame)
 				totalHeight = totalHeight + (frame.RAGEBAR_HEIGHT - frame.BORDER)
 			end
 			local yPos = (totalHeight / 2) - (frame.POWERBAR_HEIGHT - frame.BORDER)
-			print("Energy: "..yPos)
 
 			if frame.ORIENTATION == "LEFT" then
 				energy:Width(frame.ENERGYBAR_WIDTH - frame.BORDER * 2)

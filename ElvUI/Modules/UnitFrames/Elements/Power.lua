@@ -235,7 +235,6 @@ function UF:Configure_Power(frame)
 				totalHeight = totalHeight + (frame.RAGEBAR_HEIGHT - frame.BORDER)
 			end
 			local yPos = totalHeight / 2
-			print("Mana:   "..yPos)
 
 			if frame.ORIENTATION == "LEFT" then
 				power:Width(frame.POWERBAR_WIDTH - frame.BORDER * 2)
