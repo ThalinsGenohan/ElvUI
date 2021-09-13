@@ -1065,7 +1065,7 @@ E.Options.args.actionbar = {
 			name = " "
 		},
 		totemBarShortcut = {
-			order = E.myclass ~= "SHAMAN" and 21 or 10,
+			order = 10,
 			type = "execute",
 			name = L["TUTORIAL_TITLE47"],
 			func = function() ACD:SelectGroup("ElvUI", "actionbar", "barTotem") end,

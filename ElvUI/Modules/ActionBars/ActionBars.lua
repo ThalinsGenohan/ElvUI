@@ -713,9 +713,9 @@ function AB:DisableBlizzard()
 		_G["BonusActionButton"..i]:UnregisterAllEvents()
 		_G["BonusActionButton"..i]:SetAttribute("statehidden", true)
 
-		_G["MultiCastActionButton"..i]:Hide()
-		_G["MultiCastActionButton"..i]:UnregisterAllEvents()
-		_G["MultiCastActionButton"..i]:SetAttribute("statehidden", true)
+		--_G["MultiCastActionButton"..i]:Hide()
+		--_G["MultiCastActionButton"..i]:UnregisterAllEvents()
+		--_G["MultiCastActionButton"..i]:SetAttribute("statehidden", true)
 	end
 
 	MultiCastActionBarFrame.ignoreFramePositionManager = true
@@ -757,9 +757,9 @@ function AB:DisableBlizzard()
 	VehicleMenuBar:Hide()
 	VehicleMenuBar:SetParent(UIHider)
 
-	MultiCastActionBarFrame:UnregisterAllEvents()
-	MultiCastActionBarFrame:Hide()
-	MultiCastActionBarFrame:SetParent(UIHider)
+	--MultiCastActionBarFrame:UnregisterAllEvents()
+	--MultiCastActionBarFrame:Hide()
+	--MultiCastActionBarFrame:SetParent(UIHider)
 
 	InterfaceOptionsActionBarsPanelAlwaysShowActionBars:EnableMouse(false)
 	InterfaceOptionsActionBarsPanelAlwaysShowActionBars:SetAlpha(0)
