@@ -256,39 +256,34 @@ function UF:UpdateComboDisplay(event, unit)
 	if db.combobar.enable then
 		local inVehicle = UnitHasVehicleUI("player") or UnitHasVehicleUI("vehicle")
 
-		if not inVehicle and E.myclass ~= "ROGUE" and (E.myclass ~= "DRUID" or (E.myclass == "DRUID" and GetShapeshiftForm() ~= 3)) then
+		local cp
+		if inVehicle then
+			cp = GetComboPoints("vehicle", "target")
+		else
+			cp = GetComboPoints("player", "target")
+		end
+
+		local custom_backdrop = UF.db.colors.customclasspowerbackdrop and UF.db.colors.classpower_backdrop
+		if cp == 0 and db.combobar.autoHide then
 			element:Hide()
 			UF.ToggleResourceBar(element)
 		else
-			local cp
-			if inVehicle then
-				cp = GetComboPoints("vehicle", "target")
-			else
-				cp = GetComboPoints("player", "target")
-			end
-
-			local custom_backdrop = UF.db.colors.customclasspowerbackdrop and UF.db.colors.classpower_backdrop
-			if cp == 0 and db.combobar.autoHide then
-				element:Hide()
-				UF.ToggleResourceBar(element)
-			else
-				element:Show()
-				for i = 1, MAX_COMBO_POINTS do
-					if i <= cp then
-						element[i]:Show()
-					else
-						element[i]:Hide()
-					end
-
-					if custom_backdrop then
-						element[i].bg:SetVertexColor(custom_backdrop.r, custom_backdrop.g, custom_backdrop.b)
-					else
-						local r, g, b = element[i]:GetStatusBarColor()
-						element[i].bg:SetVertexColor(r * 0.35, g * 0.35, b * 0.35)
-					end
+			element:Show()
+			for i = 1, MAX_COMBO_POINTS do
+				if i <= cp then
+					element[i]:Show()
+				else
+					element[i]:Hide()
 				end
-				UF.ToggleResourceBar(element)
+
+				if custom_backdrop then
+					element[i].bg:SetVertexColor(custom_backdrop.r, custom_backdrop.g, custom_backdrop.b)
+				else
+					local r, g, b = element[i]:GetStatusBarColor()
+					element[i].bg:SetVertexColor(r * 0.35, g * 0.35, b * 0.35)
+				end
 			end
+			UF.ToggleResourceBar(element)
 		end
 	else
 		element:Hide()
