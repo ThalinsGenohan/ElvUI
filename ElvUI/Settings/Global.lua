@@ -70,7 +70,6 @@ G.unitframe = {
 				[116] = true, -- Frostbolt (30 yards)
 				[133] = true, -- Fireball (30 yards)
 				[5143] = true, -- Arcane Missiles (30 yards)
-				[5176] = true, -- Wrath (30 yards)
 				[12826] = true, -- Polymorph (30 yards)
 				[8092] = true, -- Mind Blast (30 yards)
 				[585] = true, -- Smite (30 yards)
