@@ -71,25 +71,25 @@ RB.Spell4Buffs = {
 	72586, -- Blessing of Forgotten Kings
 }
 
-RB.CasterSpell5Buffs = {
-	61316, -- Dalaran Brilliance
-	43002, -- Arcane Brilliance
-	42995, -- Arcane Intellect
-}
-
-RB.MeleeSpell5Buffs = {
+RB.Spell5Buffs = {
 	48162, -- Prayer of Fortitude
 	48161, -- Power Word: Fortitude
 	72590, -- Fortitude
 }
 
-RB.CasterSpell6Buffs = {
+RB.Spell6Buffs = {
+	61316, -- Dalaran Brilliance
+	43002, -- Arcane Brilliance
+	42995, -- Arcane Intellect
+}
+
+RB.Spell7Buffs = {
 	48938, -- Greater Blessing of Wisdom
 	48936, -- Blessing of Wisdom
 	58777, -- Mana Spring
 }
 
-RB.MeleeSpell6Buffs = {
+RB.Spell8Buffs = {
 	48934, -- Greater Blessing of Might
 	48932, -- Blessing of Might
 	47436, -- Battle Shout
@@ -132,7 +132,7 @@ end
 function RB:UpdateReminder(event, unit)
 	if event == "UNIT_AURA" and unit ~= "player" then return end
 
-	for i = 1, 6 do
+	for i = 1, 8 do
 		local texture, duration, expirationTime = self:CheckFilterForActiveBuff(self["Spell"..i.."Buffs"])
 		local button = self.frame[i]
 
@@ -205,7 +205,7 @@ function RB:UpdateSettings(isCallback)
 
 	self:UpdateDefaultIcons()
 
-	for i = 1, 6 do
+	for i = 1, 8 do
 		local button = frame[i]
 		button:ClearAllPoints()
 		button:SetWidth(E.RBRWidth)
@@ -213,7 +213,7 @@ function RB:UpdateSettings(isCallback)
 
 		if i == 1 then
 			button:SetPoint("TOP", ElvUI_ReminderBuffs, "TOP", 0, 0)
-		elseif i == 6 then
+		elseif i == 8 then
 			button:SetPoint("BOTTOM", ElvUI_ReminderBuffs, "BOTTOM", 0, 0)
 		else
 			button:Point("TOP", frame[i - 1], "BOTTOM", 0, E.Border - E.Spacing*3)
@@ -264,12 +264,11 @@ function RB:UpdateDefaultIcons()
 		[2] = "Interface\\Icons\\Spell_Misc_Food",
 		[3] = "Interface\\Icons\\Spell_Nature_Regeneration",
 		[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings",
-		[5] = (E.Role == "Caster" and "Interface\\Icons\\Spell_Holy_MagicalSentry") or "Interface\\Icons\\Spell_Holy_WordFortitude",
-		[6] = (E.Role == "Caster" and "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom") or "Interface\\Icons\\Ability_Warrior_BattleShout"
+		[5] = "Interface\\Icons\\Spell_Holy_WordFortitude",
+		[6] = "Interface\\Icons\\Spell_Holy_MagicalSentry",
+		[7] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom",
+		[8] = "Interface\\Icons\\Ability_Warrior_BattleShout"
 	}
-
-	self.Spell5Buffs = E.Role == "Caster" and self.CasterSpell5Buffs or self.MeleeSpell5Buffs
-	self.Spell6Buffs = E.Role == "Caster" and self.CasterSpell6Buffs or self.MeleeSpell6Buffs
 end
 
 function RB:Initialize()
@@ -288,7 +287,7 @@ function RB:Initialize()
 	end
 	self.frame = frame
 
-	for i = 1, 6 do
+	for i = 1, 8 do
 		frame[i] = self:CreateButton()
 		frame[i]:SetID(i)
 	end
