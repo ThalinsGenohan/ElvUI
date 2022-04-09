@@ -128,6 +128,7 @@ RB.CasterSpell13Buffs = {
 
 RB.AttackSpell13Buffs = {
 	17007, -- Leader of the Pack
+	29801, -- Rampage
 }
 
 RB.CasterSpell14Buffs = {
