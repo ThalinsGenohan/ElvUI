@@ -118,7 +118,7 @@ RB.CasterSpell12Buffs = {
 }
 
 RB.AttackSpell12Buffs = {
-	8075, -- Strength of Earth Totem
+	25527, -- Strength of Earth Totem
 }
 
 RB.CasterSpell13Buffs = {
