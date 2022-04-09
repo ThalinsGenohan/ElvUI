@@ -43,149 +43,67 @@ G.unitframe = {
 		otherFilter = "CCDebuffs",
 	},
 	spellRangeCheck = {
-		PRIEST = {
-			enemySpells = {
-				[585] = true, -- Smite (30 yards)
-			},
-			longEnemySpells = {
-				[589] = true, -- Shadow Word: Pain (30 yards)
-			},
-			friendlySpells = {
-				[2050] = true, -- Lesser Heal (40 yards)
-			},
-			resSpells = {
-				[2006] = true, -- Resurrection (40 yards)
-			},
-			petSpells = {},
-		},
 		DRUID = {
 			enemySpells = {
+				[5246] = true, -- Intimidating Shout (8 yards)
+				[20271] = true, -- Judgement of Light (10 yards)
+				[53408] = true, -- Judgement of Wisdom (10 yards)
+				[53407] = true, -- Judgement of Justice (10 yards)
+				[2094] = true, -- Blind (10 yards)
+				[2136] = true, -- Fire Blast (20 yards)
 				[33786] = true, -- Cyclone (20 yards)
+				[51514] = true, -- Hex (20 yards)
+				[5782] = true, -- Fear (25 yards)
+				[8056] = true, -- Frost Shock (25 yards)
+				[100] = true, -- Charge (25 yards)
+				[49376] = true, -- Feral Charge (25 yards)
 			},
 			longEnemySpells = {
+				[8042] = true, -- Earth Shock (30 yards)
+				[8050] = true, -- Flame Shock (30 yards)
 				[5176] = true, -- Wrath (30 yards)
+				[589] = true, -- Shadow Word: Pain (30 yards)
+				[879] = true, -- Exorcism (30 yards)
+				[403] = true, -- Lightning Bolt (30 yards)
+				[686] = true, -- Shadow Bolt (30 yards)
+				[49576] = true, -- Death Grip (30 yards)
+				[116] = true, -- Frostbolt (30 yards)
+				[133] = true, -- Fireball (30 yards)
+				[5143] = true, -- Arcane Missiles (30 yards)
+				[12826] = true, -- Polymorph (30 yards)
+				[8092] = true, -- Mind Blast (30 yards)
+				[585] = true, -- Smite (30 yards)
+				[26679] = true, -- Deadly Throw (30 yards)
+				[355] = true, -- Taunt (30 yards)
+				[75] = true, -- Auto Shot (35 yards)
+				[44614] = true, -- Frostfire Bolt (40 yards)
 			},
 			friendlySpells = {
+				[57934] = true, -- Tricks of the Trade (20 yards)
+				[3411] = true, -- Intervene (25 yards)
+				[5697] = true, -- Unending Breath (30 yards)
 				[5185] = true, -- Healing Touch (40 yards)
+				[635] = true, -- Holy Light (40 yards)
+				[2050] = true, -- Greater Heal (40 yards)
+				[331] = true, -- Healing Wave (40 yards)
+				[475] = true, -- Remove Curse (40 yards)
+				[47541] = true, -- Death Coil (40 yards)
 			},
 			resSpells = {
 				[50769] = true, -- Revive (30 yards)
 				[20484] = true, -- Rebirth (30 yards)
-			},
-			petSpells = {},
-		},
-		PALADIN = {
-			enemySpells = {
-				[20271] = true, -- Judgement (10 yards)
-			},
-			longEnemySpells = {
-				[879] = true, -- Exorcism (30 yards)
-			},
-			friendlySpells = {
-				[635] = true, -- Holy Light (40 yards)
-			},
-			resSpells = {
+				[2006] = true, -- Resurrection (30 yards)
 				[7328] = true, -- Redemption (30 yards)
-			},
-			petSpells = {},
-		},
-		SHAMAN = {
-			enemySpells = {
-				[51514] = true, -- Hex (20 yards)
-				[8042] = true, -- Earth Shock (25 yards)
-			},
-			longEnemySpells = {
-				[403] = true, -- Lightning Bolt (30 yards)
-			},
-			friendlySpells = {
-				[331] = true, -- Healing Wave (40 yards)
-			},
-			resSpells = {
 				[2008] = true, -- Ancestral Spirit (30 yards)
-			},
-			petSpells = {},
-		},
-		WARLOCK = {
-			enemySpells = {
-				[5782] = true, -- Fear (20 yards)
-			},
-			longEnemySpells = {
-				[686] = true, -- Shadow Bolt (30 yards)
-			},
-			friendlySpells = {
-				[5697] = true, -- Unending Breath (30 yards)
-			},
-			resSpells = {},
-			petSpells = {
-				[755] = true, -- Health Funnel (45 yards)
-			},
-		},
-		MAGE = {
-			enemySpells = {
-				[2136] = true, -- Fire Blast (20 yards)
-				[12826] = true, -- Polymorph (30 yards)
-			},
-			longEnemySpells = {
-				[133] = true, -- Fireball (35 yards)
-				[44614] = true, -- Frostfire Bolt (40 yards)
-			},
-			friendlySpells = {
-				[475] = true, -- Remove Curse (40 yards)
-			},
-			resSpells = {},
-			petSpells = {},
-		},
-		HUNTER = {
-			enemySpells = {
-				[75] = true, -- Auto Shot (35 yards)
-			},
-			longEnemySpells = {},
-			friendlySpells = {},
-			resSpells = {},
-			petSpells = {
-				[136] = true, -- Mend Pet (45 yards)
-			},
-		},
-		DEATHKNIGHT = {
-			enemySpells = {
-				[49576] = true, -- Death Grip (30 yards)
-			},
-			longEnemySpells = {},
-			friendlySpells = {
-				[47541] = true, -- Death Coil (40 yards)
-			},
-			resSpells = {
 				[61999] = true, -- Raise Ally (30 yards)
 			},
-			petSpells = {},
+			petSpells = {
+				[53271] = true, -- Master's Call (25 yards)
+				[755] = true, -- Health Funnel (45 yards)
+				[136] = true, -- Mend Pet (45 yards)
+				[34026] = true, -- Kill Command (45 yards)
+			},
 		},
-		ROGUE = {
-			enemySpells = {
-				[2094] = true, -- Blind (10 yards)
-			},
-			longEnemySpells = {
-				[26679] = true, -- Deadly Throw (30 yards)
-			},
-			friendlySpells = {
-				[57934] = true, -- Tricks of the Trade (20 yards)
-			},
-			resSpells = {},
-			petSpells = {},
-		},
-		WARRIOR = {
-			enemySpells = {
-				[5246] = true, -- Intimidating Shout (8 yards)
-				[100] = true, -- Charge (25 yards)
-			},
-			longEnemySpells = {
-				[355] = true, -- Taunt (30 yards)
-			},
-			friendlySpells = {
-				[3411] = true, -- Intervene (25 yards)
-			},
-			resSpells = {},
-			petSpells = {},
-		}
 	}
 }
 

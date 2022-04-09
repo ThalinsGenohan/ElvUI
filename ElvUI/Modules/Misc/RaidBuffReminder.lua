@@ -71,28 +71,90 @@ RB.Spell4Buffs = {
 	72586, -- Blessing of Forgotten Kings
 }
 
-RB.CasterSpell5Buffs = {
-	61316, -- Dalaran Brilliance
-	43002, -- Arcane Brilliance
-	42995, -- Arcane Intellect
-}
-
-RB.MeleeSpell5Buffs = {
+RB.Spell5Buffs = {
 	48162, -- Prayer of Fortitude
 	48161, -- Power Word: Fortitude
 	72590, -- Fortitude
 }
 
-RB.CasterSpell6Buffs = {
+RB.Spell6Buffs = {
+	20911, -- Blessing of Sanctuary
+	25899, -- Greater Blessing of Sanctuary
+}
+
+RB.CasterSpell7Buffs = {
+	61316, -- Dalaran Brilliance
+	43002, -- Arcane Brilliance
+	42995, -- Arcane Intellect
+}
+
+RB.AttackSpell7Buffs = {
+	48934, -- Greater Blessing of Might
+	48932, -- Blessing of Might
+	47436, -- Battle Shout
+}
+
+RB.Spell8Buffs = {
+	6307, -- Blood Pact
+	469, -- Commanding Shout
+}
+
+RB.Spell9Buffs = {
+	25506, -- Stoneskin Totem
+}
+
+RB.Spell10Buffs = {
+	467, -- Thorns
+}
+
+RB.Spell11Buffs = {
+	7294, -- Retribution Aura
+}
+
+RB.CasterSpell12Buffs = {
 	48938, -- Greater Blessing of Wisdom
 	48936, -- Blessing of Wisdom
 	58777, -- Mana Spring
 }
 
-RB.MeleeSpell6Buffs = {
-	48934, -- Greater Blessing of Might
-	48932, -- Blessing of Might
-	47436, -- Battle Shout
+RB.AttackSpell12Buffs = {
+	25527, -- Strength of Earth Totem
+}
+
+RB.CasterSpell13Buffs = {
+	30706, -- Totem of Wrath
+	24907, -- Moonkin Aura
+}
+
+RB.AttackSpell13Buffs = {
+	17007, -- Leader of the Pack
+	29801, -- Rampage
+}
+
+RB.CasterSpell14Buffs = {
+	50172, -- Moonkin's Presence
+	2895, -- Wrath of Air
+}
+
+RB.AttackSpell14Buffs = {
+	8512, -- Windfury Totem
+}
+
+RB.CasterSpell15Buffs = {
+	14752, -- Divine Spirit
+	27681, -- Prayer of Spirit
+}
+
+RB.AttackSpell15Buffs = {
+	19506, -- Trueshot Aura
+}
+
+RB.CasterSpell16Buffs = {
+	19746, -- Concentration Aura
+}
+
+RB.AttackSpell16Buffs = {
+	465, -- Devotion Aura
 }
 
 function RB:CheckFilterForActiveBuff(filter)
@@ -132,7 +194,7 @@ end
 function RB:UpdateReminder(event, unit)
 	if event == "UNIT_AURA" and unit ~= "player" then return end
 
-	for i = 1, 6 do
+	for i = 1, 16 do
 		local texture, duration, expirationTime = self:CheckFilterForActiveBuff(self["Spell"..i.."Buffs"])
 		local button = self.frame[i]
 
@@ -201,20 +263,20 @@ end
 
 function RB:UpdateSettings(isCallback)
 	local frame = self.frame
-	frame:Width(E.RBRWidth)
+	frame:Width(E.RBRWidth * 2)
 
 	self:UpdateDefaultIcons()
 
-	for i = 1, 6 do
+	for i = 1, 16 do
 		local button = frame[i]
 		button:ClearAllPoints()
 		button:SetWidth(E.RBRWidth)
 		button:SetHeight(E.RBRWidth)
 
 		if i == 1 then
-			button:SetPoint("TOP", ElvUI_ReminderBuffs, "TOP", 0, 0)
-		elseif i == 6 then
-			button:SetPoint("BOTTOM", ElvUI_ReminderBuffs, "BOTTOM", 0, 0)
+			button:SetPoint("TOPLEFT", ElvUI_ReminderBuffs, "TOPLEFT", 0, -1)
+		elseif i == 9 then
+			button:SetPoint("TOPRIGHT", ElvUI_ReminderBuffs, "TOPRIGHT", 0, -1)
 		else
 			button:Point("TOP", frame[i - 1], "BOTTOM", 0, E.Border - E.Spacing*3)
 		end
@@ -264,12 +326,27 @@ function RB:UpdateDefaultIcons()
 		[2] = "Interface\\Icons\\Spell_Misc_Food",
 		[3] = "Interface\\Icons\\Spell_Nature_Regeneration",
 		[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings",
-		[5] = (E.Role == "Caster" and "Interface\\Icons\\Spell_Holy_MagicalSentry") or "Interface\\Icons\\Spell_Holy_WordFortitude",
-		[6] = (E.Role == "Caster" and "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom") or "Interface\\Icons\\Ability_Warrior_BattleShout"
+		[5] = "Interface\\Icons\\Spell_Holy_WordFortitude",
+		[6] = "Interface\\Icons\\spell_nature_lightningshield",
+		[7] = (E.private.general.reminder.classtype == "Caster" and "Interface\\Icons\\Spell_Holy_MagicalSentry") or "Interface\\Icons\\spell_holy_fistofjustice",
+		[8] = "Interface\\Icons\\ability_warrior_rallyingcry",
+		[9] = "Interface\\Icons\\spell_nature_stoneskintotem",
+		[10] = "Interface\\Icons\\spell_nature_thorns",
+		[11] = "Interface\\Icons\\spell_holy_auraoflight",
+		[12] = (E.private.general.reminder.classtype == "Caster" and "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom") or "Interface\\Icons\\spell_nature_earthbindtotem",
+		[13] = (E.private.general.reminder.classtype == "Caster" and "Interface\\Icons\\spell_nature_moonglow") or "Interface\\Icons\\spell_nature_unyeildingstamina",
+		[14] = (E.private.general.reminder.classtype == "Caster" and "Interface\\Icons\\spell_nature_forceofnature") or "Interface\\Icons\\spell_nature_windfury",
+		[15] = (E.private.general.reminder.classtype == "Caster" and "Interface\\Icons\\spell_holy_prayerofspirit") or "Interface\\Icons\\ability_trueshot",
+		[16] = (E.private.general.reminder.classtype == "Caster" and "Interface\\Icons\\spell_holy_mindsooth") or "Interface\\Icons\\spell_holy_devotionaura",
 	}
 
-	self.Spell5Buffs = E.Role == "Caster" and self.CasterSpell5Buffs or self.MeleeSpell5Buffs
-	self.Spell6Buffs = E.Role == "Caster" and self.CasterSpell6Buffs or self.MeleeSpell6Buffs
+	self.Spell7Buffs = E.private.general.reminder.classtype == "Caster" and self.CasterSpell7Buffs or self.AttackSpell7Buffs
+
+	self.Spell12Buffs = E.private.general.reminder.classtype == "Caster" and self.CasterSpell12Buffs or self.AttackSpell12Buffs
+	self.Spell13Buffs = E.private.general.reminder.classtype == "Caster" and self.CasterSpell13Buffs or self.AttackSpell13Buffs
+	self.Spell14Buffs = E.private.general.reminder.classtype == "Caster" and self.CasterSpell14Buffs or self.AttackSpell14Buffs
+	self.Spell15Buffs = E.private.general.reminder.classtype == "Caster" and self.CasterSpell15Buffs or self.AttackSpell15Buffs
+	self.Spell16Buffs = E.private.general.reminder.classtype == "Caster" and self.CasterSpell16Buffs or self.AttackSpell16Buffs
 end
 
 function RB:Initialize()
@@ -288,7 +365,7 @@ function RB:Initialize()
 	end
 	self.frame = frame
 
-	for i = 1, 6 do
+	for i = 1, 16 do
 		frame[i] = self:CreateButton()
 		frame[i]:SetID(i)
 	end
