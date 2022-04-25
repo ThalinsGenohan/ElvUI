@@ -1,8 +1,8 @@
 # ElvUI - Wrath of the Lich King (3.3.5a) Classless Fork
 
 This is the backported version of ElvUI for World of Warcraft - Wrath of the Lich King (3.3.5a)
-This fork is designed for Ascension Classless WoW, and aims to remove all class-specific functionality from ElvUI.
-<br />
+This fork is designed for Ascension Classless WoW, and aims to remove all class-specific functionality checks from ElvUI, in order to allow Ascension's "Hero" Class to use all of these functions.
+<br /><br />
 ElvUI is a full UI replacement.
 It completely replaces the default Blizzard UI at every level with a new and better interface.
 As such, you'll only ever have to update ElvUI and not worry too much about its individual components.
